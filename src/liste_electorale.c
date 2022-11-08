@@ -16,8 +16,8 @@ int ajouter_le(char* filename, ListeElectorale le)
 	}
 	id_candidats[le.nbre_candidats] = '\0';*/
 
-        fprintf(f,"%d %d %d %d %d %d %d %d %d\n",
-		le.id, le.orientation, le.nbre_candidats,
+        fprintf(f,"%d %d %d %d %d %d %d %d %d %d\n",
+		le.id, le.id_tete, le.orientation, le.nbre_candidats,
 		le.date.jour, le.date.mois, le.date.an, 
 		le.id_candidats[0], le.id_candidats[1], le.id_candidats[2]);
 
@@ -37,23 +37,23 @@ int modifier_le(char* filename, int id, ListeElectorale nouv)
 	if(f!=NULL && f2!=NULL)
 	{
 		while(fscanf(f,
-				"%d %d %d %d %d %d %d %d %d\n",
-				&le.id, &le.orientation, &le.nbre_candidats,
+				"%d %d %d %d %d %d %d %d %d %d\n",
+				&le.id, &le.id_tete, &le.orientation, &le.nbre_candidats,
 				&le.date.jour, &le.date.mois, &le.date.an, 
 				&le.id_candidats[0], &le.id_candidats[1], &le.id_candidats[2]
 			)!=EOF)
 		{
 		    if(le.id== id)
 		    {
-			fprintf(f2,"%d %d %d %d %d %d %d %d %d\n",
-				nouv.id, nouv.orientation, nouv.nbre_candidats,
+			fprintf(f2,"%d %d %d %d %d %d %d %d %d %d\n",
+				nouv.id, nouv.id_tete, nouv.orientation, nouv.nbre_candidats,
 				nouv.date.jour, nouv.date.mois, nouv.date.an, 
 				nouv.id_candidats[0], nouv.id_candidats[1], nouv.id_candidats[2]);
 			tr=1;
 		    }
 		    else
-			fprintf(f2,"%d %d %d %d %d %d %d %d %d\n",
-				le.id, le.orientation, le.nbre_candidats,
+			fprintf(f2,"%d %d %d %d %d %d %d %d %d %d\n",
+				le.id, le.id_tete, le.orientation, le.nbre_candidats,
 				le.date.jour, le.date.mois, le.date.an, 
 				le.id_candidats[0], le.id_candidats[1], le.id_candidats[2]);
 
@@ -76,8 +76,8 @@ int supprimer_le(char* filename, int id)
 	if(f!=NULL && f2!=NULL)
 	{
 		while(fscanf(f,
-				"%d %d %d %d %d %d %d %d %d\n",
-				&le.id, &le.orientation, &le.nbre_candidats,
+				"%d %d %d %d %d %d %d %d %d %d\n",
+				&le.id, &le.id_tete, &le.orientation, &le.nbre_candidats,
 				&le.date.jour, &le.date.mois, &le.date.an, 
 				&le.id_candidats[0], &le.id_candidats[1], &le.id_candidats[2]
 			)!=EOF)
@@ -85,8 +85,8 @@ int supprimer_le(char* filename, int id)
 		    if(le.id == id)
 			tr=1;
 		    else
-			fprintf(f2,"%d %d %d %d %d %d %d %d %d\n",
-				le.id, le.orientation, le.nbre_candidats,
+			fprintf(f2,"%d %d %d %d %d %d %d %d %d %d\n",
+				le.id, le.id_tete, le.orientation, le.nbre_candidats,
 				le.date.jour, le.date.mois, le.date.an, 
 				le.id_candidats[0], le.id_candidats[1], le.id_candidats[2]);
 		}
@@ -101,19 +101,22 @@ int supprimer_le(char* filename, int id)
 ListeElectorale chercher_le(char* filename, int id)
 {
 	ListeElectorale le;
-	int tr;
+	int tr = 0;
 	FILE * f=fopen(filename, "r");
 	if(f!=NULL)
 	{
 		while(tr==0 && fscanf(f,
-				"%d %d %d %d %d %d %d %d %d\n",
-				&le.id, &le.orientation, &le.nbre_candidats,
+				"%d %d %d %d %d %d %d %d %d %d\n",
+				&le.id, &le.id_tete, &le.orientation, &le.nbre_candidats,
 				&le.date.jour, &le.date.mois, &le.date.an, 
 				&le.id_candidats[0], &le.id_candidats[1], &le.id_candidats[2]
 			)!=EOF)
 		{
 		    if(le.id== id)
-			tr=1;
+			{
+				tr=1;
+				//printf("id found:%d", id);
+			}
 		}
 	}
 	fclose(f);

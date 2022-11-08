@@ -12,8 +12,9 @@ typedef struct Date
 typedef struct ListeElectorale
 {
 	int id;
-	Date date;
+	int id_tete;
 	int orientation;
+	Date date;
 	int nbre_candidats;
 	int id_candidats[3];
 } ListeElectorale;
