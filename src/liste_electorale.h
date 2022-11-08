@@ -1,4 +1,4 @@
-#ifdef LISTE_ELECTORALE_H_
+#ifndef LISTE_ELECTORALE_H_
 #define LISTE_ELECTORALE_H_
 #include <stdio.h>
 
@@ -9,7 +9,7 @@ typedef struct Date
 	int an;
 } Date;
 
-typedef struct
+typedef struct ListeElectorale
 {
 	int id;
 	Date date;

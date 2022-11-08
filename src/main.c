@@ -33,7 +33,7 @@ main (int argc, char *argv[])
    * (except popup menus), just so that you see something after building
    * the project. Delete any components that you don't want shown initially.
    */
-  All = create_All ();
+  All = create_gestion_entry ();
   gtk_widget_show (All);
 
   gtk_main ();
