@@ -29,3 +29,4 @@ GtkWidget* create_GE_modifier (void);
 GtkWidget* create_auth (void);
 GtkWidget* create_gestion_admin (void);
 GtkWidget* create_GE_affichier (void);
+GtkWidget* create_le_vote (void);
