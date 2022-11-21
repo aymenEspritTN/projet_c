@@ -6,18 +6,19 @@ typedef struct
 int jour;
 int mois;
 int annee;
-}date;
+}date1;
 typedef struct
 {
 int cin;
 char nom[20];
 char prenom[20];
-char role[20];
-char lieu[20];
+int role[20];
+int lieu[20];
 int numBV;
 char login[20];
 char mot_de_passe[20];
-date date1;
+date1 date;
+int vote;
 }utilisateur;
 
 int ajouter(char * filename, utilisateur user );
