@@ -8,14 +8,6 @@ int ajouter_le(char* filename, ListeElectorale le)
     FILE * f=fopen(filename, "a");
     if(f!=NULL)
     {
-	/*char id_candidats[le.nbre_candidats+1];
-	int i=0;
-	for(i=0; i<le.nbre_candidats; i++)
-	{
-		id_candidats[i] = ... + " "
-	}
-	id_candidats[le.nbre_candidats] = '\0';*/
-
         fprintf(f,"%d %d %d %d %d %d %d %d %d %d\n",
 		le.id, le.id_tete, le.orientation, le.nbre_candidats,
 		le.date.jour, le.date.mois, le.date.an, 
@@ -124,6 +116,100 @@ ListeElectorale chercher_le(char* filename, int id)
 		le.id=-1;
 	return le;
 }
+
+
+
+
+
+/*int ajouter_vote(char* filename, Vote v)
+{
+    FILE * f=fopen(filename, "a");
+    if(f!=NULL)
+    {
+        fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
+
+        fclose(f);
+        return 1;
+    }
+    else return 0;
+}
+
+
+int modifier_le(char* filename, int id, Vote nouv)
+{
+	int tr=0;
+	Vote v;
+	FILE * f=fopen(filename, "r");
+	FILE * f2=fopen("nouv.txt", "w");
+	if(f!=NULL && f2!=NULL)
+	{
+		while(fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
+		{
+		    if(v.id== id)
+		    {
+			fprintf(f,"%d %d %d\n", nouv.id, nouv.id_le, nouv.id_elections);
+			tr=1;
+		    }
+		    else
+			fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
+
+		}
+	}
+	fclose(f);
+	fclose(f2);
+	remove(filename);
+	rename("nouv.txt", filename);
+	return tr;
+}
+
+
+int supprimer_vote(char* filename, int id)
+{
+	int tr=0;
+	Vote v;
+	FILE * f=fopen(filename, "r");
+	FILE * f2=fopen("nouv.txt", "w");
+	if(f!=NULL && f2!=NULL)
+	{
+		while(fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
+		{
+		    if(v.id == id)
+			tr=1;
+		    else
+			fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
+		}
+	}
+	fclose(f);
+	fclose(f2);
+	remove(filename);
+	rename("nouv.txt", filename);
+	return tr;
+}
+
+ListeElectorale chercher_vote(char* filename, int id)
+{
+	Vote v;
+	int tr = 0;
+	FILE * f=fopen(filename, "r");
+	if(f!=NULL)
+	{
+		while(tr==0 && fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
+		{
+		    if(v.id== id)
+			{
+				tr=1;
+				//printf("id found:%d", id);
+			}
+		}
+	}
+	fclose(f);
+	if(tr==0)
+		v.id=-1;
+	return v;
+}*/
+
+
+
 
 
 

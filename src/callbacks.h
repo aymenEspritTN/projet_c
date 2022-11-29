@@ -52,3 +52,7 @@ on_btn_gest_obs_clicked                (GtkButton       *button,
 void
 on_btn_gest_adm_clicked                (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_bv_ajout_addbtn_clicked             (GtkButton       *button,
+                                        gpointer         user_data);

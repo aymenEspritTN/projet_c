@@ -100,7 +100,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_gestionelection_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
-	interface.$(OBJEXT) callbacks.$(OBJEXT)
+	interface.$(OBJEXT) callbacks.$(OBJEXT) \
+	liste_electorale.$(OBJEXT)
 gestionelection_OBJECTS = $(am_gestionelection_OBJECTS)
 am__DEPENDENCIES_1 =
 gestionelection_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -281,7 +282,8 @@ gestionelection_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
-	callbacks.c callbacks.h
+	callbacks.c callbacks.h \
+	liste_electorale.c liste_electorale.h
 
 gestionelection_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS)
 all: all-am
@@ -372,6 +374,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/callbacks.Po
 include ./$(DEPDIR)/interface.Po
+include ./$(DEPDIR)/liste_electorale.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/support.Po
 

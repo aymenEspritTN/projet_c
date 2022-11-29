@@ -11,7 +11,8 @@ gestionelection_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
-	callbacks.c callbacks.h
+	callbacks.c callbacks.h \
+	liste_electorale.c liste_electorale.h
 
 gestionelection_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 
