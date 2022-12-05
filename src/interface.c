@@ -1051,8 +1051,8 @@ create_le_ajout (void)
 
   le_ajout_nbre_candidats = gtk_combo_box_new_text ();
   gtk_widget_show (le_ajout_nbre_candidats);
-  gtk_fixed_put (GTK_FIXED (fixed10), le_ajout_nbre_candidats, 152, 192);
-  gtk_widget_set_size_request (le_ajout_nbre_candidats, 232, 24);
+  gtk_fixed_put (GTK_FIXED (fixed10), le_ajout_nbre_candidats, 152, 184);
+  gtk_widget_set_size_request (le_ajout_nbre_candidats, 240, 32);
   gtk_combo_box_append_text (GTK_COMBO_BOX (le_ajout_nbre_candidats), _("1"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (le_ajout_nbre_candidats), _("2"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (le_ajout_nbre_candidats), _("3"));
@@ -1099,9 +1099,9 @@ create_le_supprimer (void)
   GtkWidget *label24;
   GtkWidget *label23;
   GtkWidget *le_supp_ret_btn;
-  GtkWidget *le_supp_combo;
   GtkWidget *image2;
   GtkWidget *le_btn_supp;
+  GtkWidget *le_supp_id;
 
   le_supprimer = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (le_supprimer), _("Supression"));
@@ -1126,11 +1126,6 @@ create_le_supprimer (void)
   gtk_fixed_put (GTK_FIXED (fixed16), le_supp_ret_btn, 8, 8);
   gtk_widget_set_size_request (le_supp_ret_btn, 56, 24);
 
-  le_supp_combo = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (le_supp_combo);
-  gtk_fixed_put (GTK_FIXED (fixed16), le_supp_combo, 128, 64);
-  gtk_widget_set_size_request (le_supp_combo, 189, 29);
-
   image2 = create_pixmap (le_supprimer, "delete.png");
   gtk_widget_show (image2);
   gtk_fixed_put (GTK_FIXED (fixed16), image2, 360, 0);
@@ -1140,6 +1135,12 @@ create_le_supprimer (void)
   gtk_widget_show (le_btn_supp);
   gtk_fixed_put (GTK_FIXED (fixed16), le_btn_supp, 184, 104);
   gtk_widget_set_size_request (le_btn_supp, 104, 32);
+
+  le_supp_id = gtk_entry_new ();
+  gtk_widget_show (le_supp_id);
+  gtk_fixed_put (GTK_FIXED (fixed16), le_supp_id, 128, 64);
+  gtk_widget_set_size_request (le_supp_id, 192, 27);
+  gtk_entry_set_invisible_char (GTK_ENTRY (le_supp_id), 8226);
 
   g_signal_connect ((gpointer) le_btn_supp, "clicked",
                     G_CALLBACK (on_le_btn_supp_clicked),
@@ -1151,9 +1152,9 @@ create_le_supprimer (void)
   GLADE_HOOKUP_OBJECT (le_supprimer, label24, "label24");
   GLADE_HOOKUP_OBJECT (le_supprimer, label23, "label23");
   GLADE_HOOKUP_OBJECT (le_supprimer, le_supp_ret_btn, "le_supp_ret_btn");
-  GLADE_HOOKUP_OBJECT (le_supprimer, le_supp_combo, "le_supp_combo");
   GLADE_HOOKUP_OBJECT (le_supprimer, image2, "image2");
   GLADE_HOOKUP_OBJECT (le_supprimer, le_btn_supp, "le_btn_supp");
+  GLADE_HOOKUP_OBJECT (le_supprimer, le_supp_id, "le_supp_id");
 
   return le_supprimer;
 }
@@ -1166,9 +1167,9 @@ create_le_modifier (void)
   GtkWidget *button26;
   GtkWidget *label20;
   GtkWidget *label21;
-  GtkWidget *le_modif_combo;
-  GtkWidget *image4;
   GtkWidget *le_modif_btn;
+  GtkWidget *le_modif_id;
+  GtkWidget *image4;
 
   le_modifier = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (le_modifier), _("Modifier"));
@@ -1193,20 +1194,21 @@ create_le_modifier (void)
   gtk_fixed_put (GTK_FIXED (fixed12), label21, 64, 64);
   gtk_widget_set_size_request (label21, 56, 24);
 
-  le_modif_combo = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (le_modif_combo);
-  gtk_fixed_put (GTK_FIXED (fixed12), le_modif_combo, 128, 64);
-  gtk_widget_set_size_request (le_modif_combo, 189, 29);
+  le_modif_btn = gtk_button_new_with_mnemonic (_("Modifier"));
+  gtk_widget_show (le_modif_btn);
+  gtk_fixed_put (GTK_FIXED (fixed12), le_modif_btn, 208, 104);
+  gtk_widget_set_size_request (le_modif_btn, 104, 32);
+
+  le_modif_id = gtk_entry_new ();
+  gtk_widget_show (le_modif_id);
+  gtk_fixed_put (GTK_FIXED (fixed12), le_modif_id, 128, 64);
+  gtk_widget_set_size_request (le_modif_id, 192, 27);
+  gtk_entry_set_invisible_char (GTK_ENTRY (le_modif_id), 8226);
 
   image4 = create_pixmap (le_modifier, "resume.png");
   gtk_widget_show (image4);
   gtk_fixed_put (GTK_FIXED (fixed12), image4, 328, 0);
   gtk_widget_set_size_request (image4, 136, 168);
-
-  le_modif_btn = gtk_button_new_with_mnemonic (_("Modifier"));
-  gtk_widget_show (le_modif_btn);
-  gtk_fixed_put (GTK_FIXED (fixed12), le_modif_btn, 208, 104);
-  gtk_widget_set_size_request (le_modif_btn, 104, 32);
 
   g_signal_connect ((gpointer) le_modif_btn, "clicked",
                     G_CALLBACK (on_le_modif_btn_clicked),
@@ -1218,9 +1220,9 @@ create_le_modifier (void)
   GLADE_HOOKUP_OBJECT (le_modifier, button26, "button26");
   GLADE_HOOKUP_OBJECT (le_modifier, label20, "label20");
   GLADE_HOOKUP_OBJECT (le_modifier, label21, "label21");
-  GLADE_HOOKUP_OBJECT (le_modifier, le_modif_combo, "le_modif_combo");
-  GLADE_HOOKUP_OBJECT (le_modifier, image4, "image4");
   GLADE_HOOKUP_OBJECT (le_modifier, le_modif_btn, "le_modif_btn");
+  GLADE_HOOKUP_OBJECT (le_modifier, le_modif_id, "le_modif_id");
+  GLADE_HOOKUP_OBJECT (le_modifier, image4, "image4");
 
   return le_modifier;
 }
@@ -1230,7 +1232,7 @@ create_le_affichage (void)
 {
   GtkWidget *le_affichage;
   GtkWidget *fixed15;
-  GtkWidget *le_aff_treev;
+  GtkWidget *le_aff_treeview;
   GtkWidget *le_aff_search;
   GtkWidget *le_aff_search_btn;
   GtkWidget *le_aff_ret;
@@ -1244,10 +1246,10 @@ create_le_affichage (void)
   gtk_widget_show (fixed15);
   gtk_container_add (GTK_CONTAINER (le_affichage), fixed15);
 
-  le_aff_treev = gtk_tree_view_new ();
-  gtk_widget_show (le_aff_treev);
-  gtk_fixed_put (GTK_FIXED (fixed15), le_aff_treev, 24, 72);
-  gtk_widget_set_size_request (le_aff_treev, 520, 192);
+  le_aff_treeview = gtk_tree_view_new ();
+  gtk_widget_show (le_aff_treeview);
+  gtk_fixed_put (GTK_FIXED (fixed15), le_aff_treeview, 24, 72);
+  gtk_widget_set_size_request (le_aff_treeview, 520, 192);
 
   le_aff_search = gtk_entry_new ();
   gtk_widget_show (le_aff_search);
@@ -1270,10 +1272,14 @@ create_le_affichage (void)
   gtk_fixed_put (GTK_FIXED (fixed15), image3, 560, 0);
   gtk_widget_set_size_request (image3, 296, 288);
 
+  g_signal_connect ((gpointer) le_affichage, "activate_default",
+                    G_CALLBACK (on_le_affichage_activate_default),
+                    NULL);
+
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (le_affichage, le_affichage, "le_affichage");
   GLADE_HOOKUP_OBJECT (le_affichage, fixed15, "fixed15");
-  GLADE_HOOKUP_OBJECT (le_affichage, le_aff_treev, "le_aff_treev");
+  GLADE_HOOKUP_OBJECT (le_affichage, le_aff_treeview, "le_aff_treeview");
   GLADE_HOOKUP_OBJECT (le_affichage, le_aff_search, "le_aff_search");
   GLADE_HOOKUP_OBJECT (le_affichage, le_aff_search_btn, "le_aff_search_btn");
   GLADE_HOOKUP_OBJECT (le_affichage, le_aff_ret, "le_aff_ret");
@@ -1666,8 +1672,8 @@ create_user_modifier (void)
   GtkWidget *button46;
   GtkWidget *label42;
   GtkWidget *label41;
-  GtkWidget *user_modif_combo;
   GtkWidget *user_modif_btn;
+  GtkWidget *user_modif_combo;
 
   user_modifier = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (user_modifier), _("user_modifier"));
@@ -1692,15 +1698,15 @@ create_user_modifier (void)
   gtk_fixed_put (GTK_FIXED (fixed23), label41, 104, 8);
   gtk_widget_set_size_request (label41, 240, 24);
 
-  user_modif_combo = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (user_modif_combo);
-  gtk_fixed_put (GTK_FIXED (fixed23), user_modif_combo, 128, 64);
-  gtk_widget_set_size_request (user_modif_combo, 189, 29);
-
   user_modif_btn = gtk_button_new_with_mnemonic (_("Modifier"));
   gtk_widget_show (user_modif_btn);
   gtk_fixed_put (GTK_FIXED (fixed23), user_modif_btn, 184, 104);
   gtk_widget_set_size_request (user_modif_btn, 104, 32);
+
+  user_modif_combo = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (user_modif_combo);
+  gtk_fixed_put (GTK_FIXED (fixed23), user_modif_combo, 128, 64);
+  gtk_widget_set_size_request (user_modif_combo, 189, 29);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (user_modifier, user_modifier, "user_modifier");
@@ -1708,8 +1714,8 @@ create_user_modifier (void)
   GLADE_HOOKUP_OBJECT (user_modifier, button46, "button46");
   GLADE_HOOKUP_OBJECT (user_modifier, label42, "label42");
   GLADE_HOOKUP_OBJECT (user_modifier, label41, "label41");
-  GLADE_HOOKUP_OBJECT (user_modifier, user_modif_combo, "user_modif_combo");
   GLADE_HOOKUP_OBJECT (user_modifier, user_modif_btn, "user_modif_btn");
+  GLADE_HOOKUP_OBJECT (user_modifier, user_modif_combo, "user_modif_combo");
 
   return user_modifier;
 }

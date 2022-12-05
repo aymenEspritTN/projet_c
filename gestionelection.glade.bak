@@ -2359,8 +2359,8 @@ Ariana
 
       <child>
 	<widget class="GtkComboBox" id="le_ajout_nbre_candidats">
-	  <property name="width_request">232</property>
-	  <property name="height_request">24</property>
+	  <property name="width_request">240</property>
+	  <property name="height_request">32</property>
 	  <property name="visible">True</property>
 	  <property name="items" translatable="yes">1
 2
@@ -2370,7 +2370,7 @@ Ariana
 	</widget>
 	<packing>
 	  <property name="x">152</property>
-	  <property name="y">192</property>
+	  <property name="y">184</property>
 	</packing>
       </child>
     </widget>
@@ -2467,21 +2467,6 @@ Ariana
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="le_supp_combo">
-	  <property name="width_request">189</property>
-	  <property name="height_request">29</property>
-	  <property name="visible">True</property>
-	  <property name="add_tearoffs">False</property>
-	  <property name="has_frame">True</property>
-	  <property name="focus_on_click">True</property>
-	</widget>
-	<packing>
-	  <property name="x">128</property>
-	  <property name="y">64</property>
-	</packing>
-      </child>
-
-      <child>
 	<widget class="GtkImage" id="image2">
 	  <property name="width_request">104</property>
 	  <property name="height_request">152</property>
@@ -2513,6 +2498,26 @@ Ariana
 	<packing>
 	  <property name="x">184</property>
 	  <property name="y">104</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkEntry" id="le_supp_id">
+	  <property name="width_request">192</property>
+	  <property name="height_request">27</property>
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="editable">True</property>
+	  <property name="visibility">True</property>
+	  <property name="max_length">0</property>
+	  <property name="text" translatable="yes"></property>
+	  <property name="has_frame">True</property>
+	  <property name="invisible_char">•</property>
+	  <property name="activates_default">False</property>
+	</widget>
+	<packing>
+	  <property name="x">128</property>
+	  <property name="y">64</property>
 	</packing>
       </child>
     </widget>
@@ -2609,13 +2614,36 @@ Ariana
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="le_modif_combo">
-	  <property name="width_request">189</property>
-	  <property name="height_request">29</property>
+	<widget class="GtkButton" id="le_modif_btn">
+	  <property name="width_request">104</property>
+	  <property name="height_request">32</property>
 	  <property name="visible">True</property>
-	  <property name="add_tearoffs">False</property>
-	  <property name="has_frame">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">Modifier</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
+	  <signal name="clicked" handler="on_le_modif_btn_clicked" last_modification_time="Tue, 15 Nov 2022 08:50:38 GMT"/>
+	</widget>
+	<packing>
+	  <property name="x">208</property>
+	  <property name="y">104</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkEntry" id="le_modif_id">
+	  <property name="width_request">192</property>
+	  <property name="height_request">27</property>
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="editable">True</property>
+	  <property name="visibility">True</property>
+	  <property name="max_length">0</property>
+	  <property name="text" translatable="yes"></property>
+	  <property name="has_frame">True</property>
+	  <property name="invisible_char">•</property>
+	  <property name="activates_default">False</property>
 	</widget>
 	<packing>
 	  <property name="x">128</property>
@@ -2639,24 +2667,6 @@ Ariana
 	  <property name="y">0</property>
 	</packing>
       </child>
-
-      <child>
-	<widget class="GtkButton" id="le_modif_btn">
-	  <property name="width_request">104</property>
-	  <property name="height_request">32</property>
-	  <property name="visible">True</property>
-	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">Modifier</property>
-	  <property name="use_underline">True</property>
-	  <property name="relief">GTK_RELIEF_NORMAL</property>
-	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_le_modif_btn_clicked" last_modification_time="Tue, 15 Nov 2022 08:50:38 GMT"/>
-	</widget>
-	<packing>
-	  <property name="x">208</property>
-	  <property name="y">104</property>
-	</packing>
-      </child>
     </widget>
   </child>
 </widget>
@@ -2676,13 +2686,14 @@ Ariana
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="activate_default" handler="on_le_affichage_activate_default" last_modification_time="Thu, 01 Dec 2022 11:00:17 GMT"/>
 
   <child>
     <widget class="GtkFixed" id="fixed15">
       <property name="visible">True</property>
 
       <child>
-	<widget class="GtkTreeView" id="le_aff_treev">
+	<widget class="GtkTreeView" id="le_aff_treeview">
 	  <property name="width_request">520</property>
 	  <property name="height_request">192</property>
 	  <property name="visible">True</property>
@@ -3773,21 +3784,6 @@ Ariana
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="user_modif_combo">
-	  <property name="width_request">189</property>
-	  <property name="height_request">29</property>
-	  <property name="visible">True</property>
-	  <property name="add_tearoffs">False</property>
-	  <property name="has_frame">True</property>
-	  <property name="focus_on_click">True</property>
-	</widget>
-	<packing>
-	  <property name="x">128</property>
-	  <property name="y">64</property>
-	</packing>
-      </child>
-
-      <child>
 	<widget class="GtkButton" id="user_modif_btn">
 	  <property name="width_request">104</property>
 	  <property name="height_request">32</property>
@@ -3801,6 +3797,21 @@ Ariana
 	<packing>
 	  <property name="x">184</property>
 	  <property name="y">104</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkComboBoxEntry" id="user_modif_combo">
+	  <property name="width_request">189</property>
+	  <property name="height_request">29</property>
+	  <property name="visible">True</property>
+	  <property name="add_tearoffs">False</property>
+	  <property name="has_frame">True</property>
+	  <property name="focus_on_click">True</property>
+	</widget>
+	<packing>
+	  <property name="x">128</property>
+	  <property name="y">64</property>
 	</packing>
       </child>
     </widget>

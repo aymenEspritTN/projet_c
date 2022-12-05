@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include "liste_electorale.h"
 
+
+char* DateToString(Date date)
+{
+	char* str = malloc(sizeof("00/00/0000"));
+	sprintf(str, "%d/%d/%d" , date.jour, date.mois, date.an);
+	return str;
+}
+
 int ajouter_le(char* filename, ListeElectorale le)
 {
     FILE * f=fopen(filename, "a");
@@ -104,11 +112,7 @@ ListeElectorale chercher_le(char* filename, int id)
 				&le.id_candidats[0], &le.id_candidats[1], &le.id_candidats[2]
 			)!=EOF)
 		{
-		    if(le.id== id)
-			{
-				tr=1;
-				//printf("id found:%d", id);
-			}
+		    if(le.id== id)tr=1;
 		}
 	}
 	fclose(f);
@@ -117,104 +121,38 @@ ListeElectorale chercher_le(char* filename, int id)
 	return le;
 }
 
-
-
-
-
-/*int ajouter_vote(char* filename, Vote v)
+ListeElectorale* read_file_as_table(char* filename, int* n)
 {
-    FILE * f=fopen(filename, "a");
-    if(f!=NULL)
-    {
-        fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
-
-        fclose(f);
-        return 1;
-    }
-    else return 0;
-}
-
-
-int modifier_le(char* filename, int id, Vote nouv)
-{
-	int tr=0;
-	Vote v;
-	FILE * f=fopen(filename, "r");
-	FILE * f2=fopen("nouv.txt", "w");
-	if(f!=NULL && f2!=NULL)
+	int lines = 0;
+	int i = 0;
+	char ch;
+	FILE* f = fopen(filename, "r");
+	while(!feof(f))
 	{
-		while(fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
-		{
-		    if(v.id== id)
-		    {
-			fprintf(f,"%d %d %d\n", nouv.id, nouv.id_le, nouv.id_elections);
-			tr=1;
-		    }
-		    else
-			fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
-
-		}
+		ch = fgetc(f);
+		if(ch == '\n')
+			lines++;
 	}
 	fclose(f);
-	fclose(f2);
-	remove(filename);
-	rename("nouv.txt", filename);
-	return tr;
-}
+	
+	ListeElectorale* t = malloc(sizeof(ListeElectorale) * lines);
+	ListeElectorale le;
+	if(!t)return NULL;
 
-
-int supprimer_vote(char* filename, int id)
-{
-	int tr=0;
-	Vote v;
-	FILE * f=fopen(filename, "r");
-	FILE * f2=fopen("nouv.txt", "w");
-	if(f!=NULL && f2!=NULL)
+	f = fopen(filename, "r");
+	while(fscanf(f,
+		"%d %d %d %d %d %d %d %d %d %d\n",
+		&le.id, &le.id_tete, &le.orientation, &le.nbre_candidats,
+		&le.date.jour, &le.date.mois, &le.date.an, 
+		&le.id_candidats[0], &le.id_candidats[1], &le.id_candidats[2]
+		)!=EOF)
 	{
-		while(fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
-		{
-		    if(v.id == id)
-			tr=1;
-		    else
-			fprintf(f,"%d %d %d\n", v.id, v.id_le, v.id_elections);
-		}
+		t[i] = le;
+		i++;
 	}
 	fclose(f);
-	fclose(f2);
-	remove(filename);
-	rename("nouv.txt", filename);
-	return tr;
+	*n = lines;
+	return t;
 }
-
-ListeElectorale chercher_vote(char* filename, int id)
-{
-	Vote v;
-	int tr = 0;
-	FILE * f=fopen(filename, "r");
-	if(f!=NULL)
-	{
-		while(tr==0 && fscanf(f,"%d %d %d\n", &v.id, &v.id_le, &v.id_elections)!=EOF)
-		{
-		    if(v.id== id)
-			{
-				tr=1;
-				//printf("id found:%d", id);
-			}
-		}
-	}
-	fclose(f);
-	if(tr==0)
-		v.id=-1;
-	return v;
-}*/
-
-
-
-
-
-
-
-
-
 
 

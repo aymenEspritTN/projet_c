@@ -56,3 +56,7 @@ on_btn_gest_adm_clicked                (GtkButton       *button,
 void
 on_bv_ajout_addbtn_clicked             (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_le_affichage_activate_default       (GtkWindow       *window,
+                                        gpointer         user_data);
