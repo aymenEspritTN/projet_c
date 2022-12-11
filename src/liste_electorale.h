@@ -24,16 +24,21 @@ typedef enum
 	id,id_tete,orientation,date,nbre_candidats,id_candidats
 } LEEnum;
 
+typedef enum
+{
+	admin, utilisateur, observateur, electeur
+} roles;
+
 typedef struct
 {
 	int cin;
 	char nom[20];
 	char prenom[20];
+	char login[20];
+	char pass[20];
 	int role;
 	int lieu;
 	int numbv;
-	char login[20];
-	char pass[20];
 	Date date;
 	int vote;
 } User;

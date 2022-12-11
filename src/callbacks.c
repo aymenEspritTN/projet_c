@@ -8,14 +8,53 @@
 #include "interface.h"
 #include "support.h"
 #include "liste_electorale.h"
+#include "bureau_de_vote.h"
+#include "election.h"
 
-int le_ajout_mode = 0; //0 = AJOUT, 1 = MODIFIER
+//0 = AJOUT, 1 = MODIFIER
+int le_ajout_mode = 0;
+int bv_ajout_mode=0;
+int ge_ajout_mode = 0;
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void
+on_btn_statistics_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_statistics();
+	GtkWidget *curr = lookup_widget(button, "gestion_entry");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
 
 void
 on_le_btn_vote_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	GtkWidget *le_vote = create_le_vote();
+	GtkWidget *le = lookup_widget(button, "le");
+	gtk_widget_show(le_vote);
+	gtk_widget_hide(le);
 }
 
 
@@ -35,7 +74,11 @@ void
 on_le_btn_supp_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	
+	GtkWidget *le_supprimer = create_le_supprimer();
+	GtkWidget *le = lookup_widget(button, "le");
+	gtk_widget_show(le_supprimer);
+	gtk_widget_hide(le);
 }
 
 
@@ -140,7 +183,7 @@ void treeview_remplir(GtkWidget* liste, ListeElectorale t[], int n)
 	{
 		ListeElectorale le = t[i];
 		
-		sprintf(_id_candidats, "%d|%d|%d",
+		sprintf(_id_candidats, "%d, %d, %d",
 			le.id_candidats[0], le.id_candidats[1], le.id_candidats[2]);
 
 		gtk_list_store_append(GTK_LIST_STORE(store), &iter);
@@ -164,19 +207,57 @@ void treeview_search(GtkWidget* liste, char* query)
 	int found_n = 0;
 	ListeElectorale found[n];
 	
-	int i=0;
-	for(i=0; i<n; i++)
+	if( strcmp(query, "")==0 )
 	{
-		int id = t[i].id;
-		if( atoi(query) == id )
+		int i=0;
+		for(i=0; i<n; i++)
 		{
 			found[found_n] = t[i];
 			found_n++;
 		}
 	}
+	else
+	{
+		int i=0;
+		for(i=0; i<n; i++)
+		{
+			int id = t[i].id;
+			if( atoi(query) == id )
+			{
+				found[found_n] = t[i];
+				found_n++;
+			}
+		}
+	}
+	
+	
+	GtkWidget* le_affichage = lookup_widget(liste, "le_affichage");
+	if(found_n == 0)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (le_affichage,
+		                          GTK_DIALOG_DESTROY_WITH_PARENT,
+		                          GTK_MESSAGE_INFO,
+		                          GTK_BUTTONS_CLOSE,
+		                          "Aucun resultat trouve");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
 
 	treeview_vider(liste);
 	treeview_remplir(liste, found, found_n);
+}
+
+
+
+
+void
+on_le_aff_search_btn_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *inp = lookup_widget(button, "le_aff_search");
+	GtkWidget *le_aff_treeview = lookup_widget(button, "le_aff_treeview");
+	char* query = gtk_entry_get_text(inp);
+	treeview_search(le_aff_treeview, query);
 }
 
 
@@ -212,7 +293,7 @@ on_le_ajout_btn_clicked                (GtkButton       *button,
 	GtkWidget *le_ajout_robot = lookup_widget(button, "le_ajout_robot");
 	
 	char* id = gtk_entry_get_text(le_ajout_id);
-	char* id_tete = gtk_entry_get_text(le_ajout_id);
+	char* id_tete = gtk_entry_get_text(le_ajout_id_tete);
 	char* id_cand1 = gtk_entry_get_text(le_ajout_cand1);
 	char* id_cand2 = gtk_entry_get_text(le_ajout_cand2);
 	char* id_cand3 = gtk_entry_get_text(le_ajout_cand3);
@@ -224,11 +305,9 @@ on_le_ajout_btn_clicked                (GtkButton       *button,
 	int mid = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(le_ajout_or2));
 	int droit = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(le_ajout_or3));
 	int orientation = 0;
-	int nbre_candidats = atoi(gtk_combo_box_get_active_text(le_ajout_nbre_candidats));
+	char* nbre_candidats = gtk_combo_box_get_active_text(le_ajout_nbre_candidats);
 	
-	if(gauche)orientation = 0;
-	if(mid)orientation = 1;
-	if(droit)orientation = 2;
+	if(gauche)orientation = 0; else if(mid)orientation = 1; else if(droit)orientation = 2;
 
 	ListeElectorale le;
 	le.id = atoi(id);
@@ -237,7 +316,6 @@ on_le_ajout_btn_clicked                (GtkButton       *button,
 	le.date.mois = mois;
 	le.date.an = an;
 	le.id_tete = atoi(id_tete);
-	le.nbre_candidats = nbre_candidats;
 	le.id_candidats[0] = atoi(id_cand1);
 	le.id_candidats[1] = atoi(id_cand2);
 	le.id_candidats[2] = atoi(id_cand3);
@@ -249,11 +327,19 @@ on_le_ajout_btn_clicked                (GtkButton       *button,
 
 	char error[100] = "";
 
-
 	ListeElectorale existing_le = chercher_le("le.txt", le.id);
 	if(existing_le.id != -1 && le_ajout_mode != 1)
 	{
 		strcat(error, "Cet idee de liste a ete deja choisi (existe)\n");
+	}
+
+	if(nbre_candidats==NULL)
+	{
+		strcat(error, "Veuillez selectionner un nombre de candidats.\n");	
+	}
+	else
+	{
+		le.nbre_candidats = atoi(nbre_candidats);
 	}
 
 	
@@ -326,8 +412,24 @@ void
 on_le_modif_btn_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkWidget *le_ajout = create_le_ajout();
+	
 	GtkWidget *le_modifier = lookup_widget(button, "le_modifier");
+	GtkWidget *le_modif_id = lookup_widget(button, "le_modif_id");
+	char* id = gtk_entry_get_text(le_modif_id);
+	ListeElectorale existing = chercher_le("le.txt", atoi(id));
+	if(existing.id == -1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (le_modifier,
+			                  GTK_DIALOG_DESTROY_WITH_PARENT,
+			                  GTK_MESSAGE_ERROR,
+			                  GTK_BUTTONS_CLOSE,
+			                  "Id est invalide ou n'existe pas.");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+
+	GtkWidget *le_ajout = create_le_ajout();
 	gtk_widget_show(le_ajout);
 	gtk_widget_hide(le_modifier);
 	
@@ -335,11 +437,6 @@ on_le_modif_btn_clicked                (GtkButton       *button,
 	
 	GtkWidget *le_ajout_btn = lookup_widget(le_ajout, "le_ajout_addbtn");
 	gtk_button_set_label(GTK_BUTTON(le_ajout_btn), "Modifier");
-	
-	GtkWidget *le_modif_id = lookup_widget(button, "le_modif_id");
-	char* id = gtk_entry_get_text(le_modif_id);
-	
-	ListeElectorale existing = chercher_le("le.txt", atoi(id));
 	
 	GtkWidget *le_ajout_id = lookup_widget(le_ajout, "le_ajout_id");
 	GtkWidget *le_ajout_id_tete = lookup_widget(le_ajout, "le_ajout_id_tete");
@@ -392,12 +489,54 @@ on_buttonElec_clicked                  (GtkButton       *button,
 
 }
 
+void voter(GtkWidget* button)
+{
+	GtkWidget* le_vote = lookup_widget(button, "le_vote");
+	GtkWidget* le_vote_id_liste = lookup_widget(button, "le_vote_id_liste");
+	GtkWidget* le_vote_id_user = lookup_widget(button, "le_vote_id_user");
+	char* id_liste = gtk_entry_get_text(le_vote_id_liste);
+	char* id_user = gtk_entry_get_text(le_vote_id_user);
+
+	/*User existing_user = chercher_user("user.txt", id_user);
+	if(existing_user.id == -1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (le_vote,
+			                  GTK_DIALOG_DESTROY_WITH_PARENT,
+			                  GTK_MESSAGE_ERROR,
+			                  GTK_BUTTONS_CLOSE,
+			                  "Id _Utilisateur_ est invalide ou n'existe pas.");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	User existing_le = chercher_user("le.txt", id_liste);
+	if(existing_le.id == -1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (le_vote,
+			                  GTK_DIALOG_DESTROY_WITH_PARENT,
+			                  GTK_MESSAGE_ERROR,
+			                  GTK_BUTTONS_CLOSE,
+			                  "Id ListeElectorale est invalide ou n'existe pas.");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	existing_user.vote = atoi(id_liste);*/
+	
+	GtkWidget* dialog = gtk_message_dialog_new (le_vote,
+		                  GTK_DIALOG_DESTROY_WITH_PARENT,
+		                  GTK_MESSAGE_INFO,
+		                  GTK_BUTTONS_CLOSE,
+		                  "Vote bien recue. Merci.");
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
 
 void
 on_le_btn_vote_valider_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	voter(button);
 }
 
 
@@ -405,18 +544,9 @@ void
 on_le_vote_blanche_btn_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
-
-}
-
-
-void
-on_btn_gest_le_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	GtkWidget *le = create_le();
-	GtkWidget *gestion_entry = lookup_widget(button, "gestion_entry");
-	gtk_widget_show(le);
-	gtk_widget_hide(gestion_entry);
+	GtkWidget* le_vote_id_liste = lookup_widget(button, "le_vote_id_liste");
+	gtk_entry_set_text(le_vote_id_liste, "-1");
+	voter(button);
 }
 
 
@@ -432,19 +562,12 @@ void
 on_btn_gest_adm_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkWidget *gestion_admin = create_gestion_admin();
+	GtkWidget *auth = create_auth();
 	GtkWidget *gestion_entry = lookup_widget(button, "gestion_entry");
-	gtk_widget_show(gestion_admin);
+	gtk_widget_show(auth);
 	gtk_widget_hide(gestion_entry);
 }
 
-
-void
-on_bv_ajout_addbtn_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
 
 
 void
@@ -453,4 +576,1083 @@ on_le_affichage_activate_default       (GtkWindow       *window,
 {
 
 }
+
+
+void
+on_auth_btn_login_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *auth = lookup_widget(button, "auth");
+	GtkWidget *auth_id = lookup_widget(button, "auth_id");
+	GtkWidget *auth_pass = lookup_widget(button, "auth_pass");
+	char* login = gtk_entry_get_text(auth_id);
+	char* password = gtk_entry_get_text(auth_pass);
+	
+	//user exists = get_user_by_account("user.txt", login, password);
+	User exists;
+	exists.cin = -1;
+	if(strcmp(login, "9999")==0 && strcmp(password, "0000")==0)
+	{
+		exists.cin = 99999999;
+		exists.role = admin;
+	}
+
+	if(exists.cin == -1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (auth,
+		                          GTK_DIALOG_DESTROY_WITH_PARENT,
+		                          GTK_MESSAGE_INFO,
+		                          GTK_BUTTONS_CLOSE,
+		                          "Erreur: nom de compte ou mot de passe invalide.");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	else
+	{
+		if(exists.role != admin)
+		{
+			GtkWidget* dialog = gtk_message_dialog_new (auth,
+				                  GTK_DIALOG_DESTROY_WITH_PARENT,
+				                  GTK_MESSAGE_INFO,
+				                  GTK_BUTTONS_CLOSE,
+				                  "Compte n'est pas admin.\nVous ne pouver pas acceder.");
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+		}
+		else
+		{
+			GtkWidget *gestion_admin = create_gestion_admin();
+			gtk_widget_show(gestion_admin);
+			gtk_widget_hide(auth);
+		}
+	}
+}
+
+
+void
+on_le_supp_btn_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *le_supprimer = lookup_widget(button, "le_supprimer");
+	GtkWidget *le_supp_id = lookup_widget(le_supprimer, "le_supp_id");
+	char* id = gtk_entry_get_text(le_supp_id);
+	ListeElectorale existing = chercher_le("le.txt", atoi(id));
+	if(existing.id == -1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (le_supprimer,
+			                  GTK_DIALOG_DESTROY_WITH_PARENT,
+			                  GTK_MESSAGE_WARNING,
+			                  GTK_BUTTONS_CLOSE,
+			                  "Id est invalide ou n'existe pas.");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	GtkWidget *confirm_dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+							GTK_MESSAGE_QUESTION,
+							GTK_BUTTONS_OK_CANCEL,
+							"Es-tu sûr de vouloir faire ça?");
+
+	int result = gtk_dialog_run(GTK_DIALOG(confirm_dialog));
+	gtk_widget_destroy (confirm_dialog);
+
+	if (result == GTK_RESPONSE_OK)
+	{
+		supprimer_le("le.txt", existing.id);
+		GtkWidget* dialog = gtk_message_dialog_new (le_supprimer,
+			                  GTK_DIALOG_DESTROY_WITH_PARENT,
+			                  GTK_MESSAGE_INFO,
+			                  GTK_BUTTONS_CLOSE,
+			                  "Supprimer avec succes!");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+}
+
+
+void
+on_gestion_entry_realize               (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+	GtkWidget* title = lookup_widget(widget, "gestion_entry_title");
+	PangoFontDescription *df = pango_font_description_new();
+	pango_font_description_set_size(df,24*PANGO_SCALE);
+	gtk_widget_modify_font(title, df);
+	gtk_label_set_markup(GTK_LABEL(title), "Gestion Election");
+	pango_font_description_free (df);
+	//GtkWidget* loading_window = create_loading_window(); gtk_widget_show(loading_window);
+}
+
+
+void
+on_le_btn_ret_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_gestion_entry();
+	GtkWidget *current = lookup_widget(button, "le");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_le_ajout_btn_ret_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_le();
+	GtkWidget *current = lookup_widget(button, "le_ajout");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_le_supp_btn_ret_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_le();
+	GtkWidget *current = lookup_widget(button, "le_supprimer");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_le_modif_btn_ret_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_le();
+	GtkWidget *current = lookup_widget(button, "le_modifier");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_le_aff_btn_ret_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_le();
+	GtkWidget *current = lookup_widget(button, "le_affichage");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_le_vote_btn_ret_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_le();
+	GtkWidget *current = lookup_widget(button, "le_vote");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_auth_btn_ret_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_gestion_entry();
+	GtkWidget *current = lookup_widget(button, "auth");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+void
+on_gestion_admin_btn_ret_clicked       (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *back = create_auth();
+	GtkWidget *current = lookup_widget(button, "gestion_admin");
+	gtk_widget_show(back);
+	gtk_widget_hide(current);
+}
+
+
+void
+on_btn_gest_user_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_user();
+	GtkWidget *curr = lookup_widget(button, "gestion_admin");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_btn_gest_bv_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *bv = create_bv();
+	GtkWidget *gestion_admin = lookup_widget(button, "gestion_admin");
+	gtk_widget_show(bv);
+	gtk_widget_hide(gestion_admin);
+}
+
+
+void
+on_btn_gest_le_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *le = create_le();
+	GtkWidget *gestion_entry = lookup_widget(button, "gestion_entry");
+	gtk_widget_show(le);
+	gtk_widget_hide(gestion_entry);
+}
+
+
+
+void
+on_btn_gest_ge_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+	GtkWidget *next = create_ge();
+	GtkWidget *curr = lookup_widget(button, "gestion_admin");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+void close_loading(gpointer data)
+{
+	GtkWidget *next = create_gestion_entry();
+	GtkWidget *myself = lookup_widget(data, "loading_window");
+	gtk_widget_show(next);
+	gtk_widget_destroy(myself);
+}
+
+void
+on_loading_window_realize              (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+	gtk_timeout_add(5000, close_loading, widget);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void
+on_user_btn_ret_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_gestion_admin();
+	GtkWidget *curr = lookup_widget(button, "user");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_button73_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void
+on_ge_btn_ret_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_gestion_admin();
+	GtkWidget *curr = lookup_widget(button, "ge");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_ajout_btn_ret_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge();
+	GtkWidget *curr = lookup_widget(button, "ge_ajouter");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_modif_btn_ret_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge();
+	GtkWidget *curr = lookup_widget(button, "ge_modifier");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_supp_btn_ret_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge();
+	GtkWidget *curr = lookup_widget(button, "ge_supprimer");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_aff_btn_ret_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge();
+	GtkWidget *curr = lookup_widget(button, "ge_affichier");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+void
+on_butAjou_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *GE_ajouter = lookup_widget(button, "GE_ajouter");
+	GtkWidget *ge_entryId = lookup_widget(button, "ge_entryId");
+	GtkWidget *ge_spinbutJour = lookup_widget(button, "ge_spinbutJour");
+	GtkWidget *ge_spinbutMois = lookup_widget(button, "ge_spinbutMois");
+	GtkWidget *ge_spinbutAnnee = lookup_widget(button, "ge_spinbutAnnee");
+
+	GtkWidget *radiobtn5000 = lookup_widget(button, "radiobtn5000");
+	GtkWidget *radiobtn10000 = lookup_widget(button, "radiobtn10000");
+	GtkWidget *radiobtn25000 = lookup_widget(button, "radiobtn25000");
+	GtkWidget *radiobtn50000 = lookup_widget(button, "radiobtn50000");
+	GtkWidget *radiobtn100000 = lookup_widget(button, "radiobtn100000");
+	GtkWidget *radiobtn500000 = lookup_widget(button, "radiobtn500000");
+	GtkWidget *radiobtn__500000= lookup_widget(button, "radiobtn__500000");
+	GtkWidget *ge_entryNbc= lookup_widget(button, "ge_entryNbc");
+	GtkWidget *ge_combo_muni= lookup_widget(button, "ge_combo_muni");
+	GtkWidget *ge_robot = lookup_widget(button, "ge_robot");
+
+	
+	
+	char* id1 = gtk_entry_get_text(ge_entryId);
+	
+	int jour = gtk_spin_button_get_value_as_int(ge_spinbutJour);
+	int mois = gtk_spin_button_get_value_as_int(ge_spinbutMois);
+	int annee = gtk_spin_button_get_value_as_int(ge_spinbutAnnee);
+
+
+
+	
+	
+	int radio5000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn5000));
+	int radio10000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn10000));
+	int radio25000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn25000));
+	int radio50000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn50000));
+	int radio100000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn100000));
+	int radio500000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn500000));
+	int radio__500000 = gtk_toggle_button_get_active(GTK_RADIO_BUTTON(radiobtn__500000));
+	
+	
+	int id2  = atoi (id1);
+	int robotCheck = gtk_toggle_button_get_active(GTK_CHECK_BUTTON(ge_robot));
+	char* municipalite = gtk_combo_box_get_active_text(ge_combo_muni);
+	
+	char error[100];
+	strcpy(error," ");
+
+	GestionElection ge;
+	ge.id=id2;
+	
+	ge.date.jour = jour;
+	ge.date.mois = mois;
+	ge.date.an = annee;
+	
+	if (radio5000==1)
+		{strcpy(ge.nombre_d_habitant,"jusqu_a_5000");
+		ge.nombre_de_conseiller=10;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"10");
+		}
+	else if (radio10000==1)
+		{strcpy(ge.nombre_d_habitant,"de_5001_a_10000");;
+		ge.nombre_de_conseiller=12;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"12");
+		}
+	else if (radio25000==1)
+		{strcpy(ge.nombre_d_habitant,"de_10001_a_25000");
+		ge.nombre_de_conseiller=16;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"16");
+		}
+	else if (radio50000==1)
+		{strcpy(ge.nombre_d_habitant,"de25001_a_50000");
+		ge.nombre_de_conseiller=22;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"22");
+		}
+	else if (radio100000==1)
+		{strcpy(ge.nombre_d_habitant,"de_50001_a_100000");
+		ge.nombre_de_conseiller=30;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"30");
+		}
+	
+	else if (radio500000==1)
+		{strcpy(ge.nombre_d_habitant,"de_100001_a_500000");
+		ge.nombre_de_conseiller=40;
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"40");
+		}
+	
+	else if (radio__500000==1)
+		{strcpy(ge.nombre_d_habitant,"plus_que_500000");
+		ge.nombre_de_conseiller=60;		
+		gtk_entry_set_text(GTK_ENTRY(ge_entryNbc),"60");
+		}
+			
+	GestionElection testid=chercher_Ge(id2,"ge.txt");
+	strcpy(ge.municipalite,municipalite);
+	if (strlen(municipalite)==0)
+	{
+		strcat(error,"veuillez choisir une municipalite\n");
+	}
+		
+	if(robotCheck == 0)
+	{
+		strcat(error, "verifiez que vous n'etes pas un robot\n");
+	}
+	else if(strlen(id1)!=8)
+		{
+		strcat(error,"la taille de l id est invalide\n");
+		}
+	else if ((testid.id) != -1)
+	{
+		strcat(error,"election existante\n");
+	}
+	else if ((strlen(id1)==8)&&((testid.id)==-1)&&(robotCheck == 1)&&(strlen(municipalite)!=0))
+	{
+		ajouter_GE("ge.txt", ge);
+		strcat(error,"election ajoutee avec succes\n");			
+	}
+
+	GtkWidget* dialog = gtk_message_dialog_new (GE_ajouter,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,error);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	if(strlen(error)>0)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (GE_ajouter,
+		                          GTK_DIALOG_DESTROY_WITH_PARENT,
+		                          GTK_MESSAGE_INFO,
+		                          GTK_BUTTONS_CLOSE,
+		                          error);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	else
+	{
+		if(ge_ajout_mode == 0)
+		{
+			ajouter_GE("ge.txt",ge);
+			GtkWidget* dialog = gtk_message_dialog_new (GE_ajouter,
+				                  GTK_DIALOG_DESTROY_WITH_PARENT,
+				                  GTK_MESSAGE_INFO,
+				                  GTK_BUTTONS_CLOSE,
+				                  "Election '%d' a ete ajoute avec succes",id2);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+		}
+		else
+		{
+			modifier_GE(ge.id,"ge.txt",ge);
+			GtkWidget* dialog = gtk_message_dialog_new (GE_ajouter,
+				                  GTK_DIALOG_DESTROY_WITH_PARENT,
+				                  GTK_MESSAGE_INFO,
+				                  GTK_BUTTONS_CLOSE,
+				               "Election '%d' a ete modifiee avec succes", id2);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+		}
+	}
+}
+
+
+void
+on_ge_modif_btn_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	char error[100];
+	char tmp[50]="";
+	GtkWidget *GE_ajouter = create_ge_ajouter();
+	GtkWidget *GE_modifier = lookup_widget(button, "GE_modifier");
+	gtk_widget_show(GE_ajouter);
+	gtk_widget_hide(GE_modifier);
+	ge_ajout_mode=1;
+	GtkWidget *butAjouGE = lookup_widget(GE_ajouter, "butAjouGE");
+	gtk_button_set_label(GTK_BUTTON(butAjouGE), "Modifier");
+	
+	
+	GtkWidget *ge_entrymodifier=lookup_widget(button, "ge_entrymodifier");
+	char* id = gtk_entry_get_text(ge_entrymodifier);
+	
+	GestionElection exist =chercher_Ge(atoi(id),"ge.txt");
+	GtkWidget *ge_entryId = lookup_widget(GE_ajouter, "ge_entryId");
+	GtkWidget *ge_spinbutJour = lookup_widget(GE_ajouter, "ge_spinbutJour");
+	GtkWidget *ge_spinbutMois = lookup_widget(GE_ajouter, "ge_spinbutMois");
+	GtkWidget *ge_spinbutAnnee = lookup_widget(GE_ajouter, "ge_spinbutAnnee");
+
+	GtkWidget *radiobtn5000 = lookup_widget(GE_ajouter, "radiobtn5000");
+	GtkWidget *radiobtn10000 = lookup_widget(GE_ajouter, "radiobtn10000");
+	GtkWidget *radiobtn25000 = lookup_widget(GE_ajouter, "radiobtn25000");
+	GtkWidget *radiobtn50000 = lookup_widget(GE_ajouter, "radiobtn50000");
+	GtkWidget *radiobtn100000 = lookup_widget(GE_ajouter, "radiobtn100000");
+	GtkWidget *radiobtn500000 = lookup_widget(GE_ajouter, "radiobtn500000");
+	GtkWidget *radiobtn__500000= lookup_widget(GE_ajouter, "radiobtn__500000");
+	GtkWidget *ge_entryNbc= lookup_widget(GE_ajouter, "ge_entryNbc");
+	GtkWidget *ge_combo_muni= lookup_widget(GE_ajouter, "ge_combo_muni");
+	
+	sprintf(tmp, "%d", exist.id);
+	gtk_entry_set_text(GTK_ENTRY(ge_entryId),tmp);
+	
+	gtk_spin_button_set_value((ge_spinbutJour),exist.date.jour);
+			
+	gtk_spin_button_set_value((ge_spinbutMois),exist.date.mois);
+
+	gtk_spin_button_set_value((ge_spinbutAnnee),exist.date.an);
+
+	if(strcmp(exist.municipalite,"jusqu_a_5000")==0)
+	gtk_toggle_button_set_active(radiobtn5000, TRUE);
+	if(strcmp(exist.municipalite,"de_5001_a_10000")==0)
+	gtk_toggle_button_set_active(radiobtn10000, TRUE);
+	if(strcmp(exist.municipalite,"de_10001_a_25000")==0)
+	gtk_toggle_button_set_active(radiobtn25000, TRUE);
+	if(strcmp(exist.municipalite,"de25001_a_50000")==0)
+	gtk_toggle_button_set_active(radiobtn50000, TRUE);
+	if(strcmp(exist.municipalite,"de_50001_a_100000")==0)
+	gtk_toggle_button_set_active(radiobtn100000, TRUE);
+	if(strcmp(exist.municipalite,"de_100001_a_500000")==0)
+	gtk_toggle_button_set_active(radiobtn500000, TRUE);
+	if(strcmp(exist.municipalite,"plus_que_500000")==0)
+	gtk_toggle_button_set_active(radiobtn__500000, TRUE);
+
+	sprintf(tmp, "%d", exist.nombre_de_conseiller);		
+	gtk_entry_set_text((ge_entryNbc),tmp);
+
+	gtk_combo_box_set_active(ge_combo_muni,exist.municipalite -1);
+}
+
+
+void
+on_ge_supp_btn_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *GE_supprimer = lookup_widget(button, "GE_supprimer");
+	GtkWidget *ge_btn_supp = lookup_widget(button, "ge_btn_supp");
+	char* id1 = gtk_entry_get_text(ge_btn_supp);
+	int id2 = atoi(id1);
+	GestionElection test;
+	test=chercher_Ge(id2,"ge.txt");
+	if(test.id==-1)
+	{
+		GtkWidget* dialog = gtk_message_dialog_new (GE_supprimer,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "L election '%d' n existe pas", id2);
+					gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	else
+	{
+		supprimer_GE(id2,"ge.txt");
+		GtkWidget* dialog = gtk_message_dialog_new (GE_supprimer,
+		                          GTK_DIALOG_DESTROY_WITH_PARENT,
+		                          GTK_MESSAGE_INFO,
+		                          GTK_BUTTONS_CLOSE,
+		                          "L election '%d' a ete supprimee avec succes", id2);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+}
+
+
+void
+on_ge_btn_ajout_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge_ajouter();
+	GtkWidget *curr = lookup_widget(button, "ge");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_btn_modif_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge_modifier();
+	GtkWidget *curr = lookup_widget(button, "ge");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_btn_supp_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge_supprimer();
+	GtkWidget *curr = lookup_widget(button, "ge");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_ge_btn_aff_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_ge_affichier();
+	GtkWidget *curr = lookup_widget(button, "ge");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void
+on_bv_ajout_addbtn_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+        int x,y,tst,tst2;
+        
+	GtkWidget *bv_ajout = lookup_widget(button, "bv_ajout");
+	GtkWidget *bv_ajoutid = lookup_widget(button, "bv_ajoutId");
+	GtkWidget *bv_adresse= lookup_widget(button, "bv_adresse");
+        GtkWidget *bv_ajout_combobox= lookup_widget(button, "bv_ajout_combobox");
+	GtkWidget *bv_salle_spin = lookup_widget(button, "bv_salle_spin");
+        GtkWidget *bv_ajoutidagent = lookup_widget(button, "bv_ajoutidagent");
+        GtkWidget *bv_radio1 = lookup_widget(button, "bv_radio1");
+        GtkWidget *bv_radio2 = lookup_widget(button, "bv_radio2");
+        GtkWidget *bv_radio3 = lookup_widget(button, "bv_radio3");
+        GtkWidget *bv_radio4 = lookup_widget(button, "bv_radio4");
+
+	char* id = gtk_entry_get_text(bv_ajoutid);
+	char* adresse = gtk_entry_get_text(bv_adresse);
+	int capacite_el =atoi(gtk_combo_box_get_active_text(bv_ajout_combobox));
+	int salle = gtk_spin_button_get_value_as_int(bv_salle_spin);
+	int capacite_ob = 0;
+	char* id_agent = gtk_entry_get_text(bv_ajoutidagent);
+	if( gtk_toggle_button_get_active(GTK_RADIO_BUTTON(bv_radio1)))
+		capacite_ob = 1;
+	else if( gtk_toggle_button_get_active(GTK_RADIO_BUTTON(bv_radio2)))
+		capacite_ob = 2;
+        else if( gtk_toggle_button_get_active(GTK_RADIO_BUTTON(bv_radio3)))
+                capacite_ob = 3;
+	else if( gtk_toggle_button_get_active(GTK_RADIO_BUTTON(bv_radio4)))
+		capacite_ob = 4;
+
+	x=strlen(id);
+        y=strlen(id_agent);
+	BureauDeVote bv,nouv;
+	bv.id = atoi(id);
+	bv.capacite_el = capacite_el;
+        bv.capacite_ob=capacite_ob;
+        strcpy(bv.adresse,adresse);
+	bv.id_agent=atoi(id_agent);
+        bv.salle=salle;
+	
+        tst=test("bv.txt", atoi(id));
+	if (bv_ajout_mode == 0)
+	{
+         if(x==8 && y==8 && tst==1)
+         {
+          ajouter_bv("bv.txt", bv);
+	  GtkWidget* dialog = gtk_message_dialog_new (bv_ajout,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "Le bv '%s' a ete ajoute avec succes", id);
+	  gtk_dialog_run (GTK_DIALOG (dialog));
+	  gtk_widget_destroy (dialog);
+          }
+         else if(x==8 && y==8 && tst==0)
+         {
+          GtkWidget* dialog = gtk_message_dialog_new (bv_ajout,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "id deja existe");
+	  gtk_dialog_run (GTK_DIALOG (dialog));
+	  gtk_widget_destroy (dialog);
+          }
+
+          else
+          {
+          GtkWidget* dialog = gtk_message_dialog_new (bv_ajout,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "la taille du id ou id agent different de 8");
+	  gtk_dialog_run (GTK_DIALOG (dialog));
+	  gtk_widget_destroy (dialog);
+          }
+	}
+         else if (bv_ajout_mode == 1)
+         {
+          modifier_bv("bv.txt",atoi(id),bv);
+          GtkWidget* dialog = gtk_message_dialog_new (bv_ajout,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "modification avec succes");
+	  gtk_dialog_run (GTK_DIALOG (dialog));
+	  gtk_widget_destroy (dialog);
+	}
+}
+
+
+
+void
+on_bv_btn_supprimer_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+        GtkWidget *bv_supprimer = create_bv_supprimer();
+	GtkWidget *bv = lookup_widget(button, "bv");
+	gtk_widget_show(bv_supprimer);
+	gtk_widget_hide(bv);
+}
+
+
+void
+on_bv_btn_ajout_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *bv_ajout = create_bv_ajout();
+	GtkWidget *bv = lookup_widget(button, "bv");
+	gtk_widget_show(bv_ajout);
+	gtk_widget_hide(bv);
+        bv_ajout_mode=0;
+}
+
+
+void
+on_bv_btn_afficher_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+        GtkWidget *bv_aff_treev;
+        GtkWidget *bv_affichage = create_bv_affichage();
+	GtkWidget *bv = lookup_widget(button, "bv");
+	gtk_widget_show(bv_affichage);
+	gtk_widget_hide(bv);
+ 	bv_aff_treev=lookup_widget(bv_affichage,"bv_aff_treev");
+	affiche_bv(bv_aff_treev);
+}
+
+
+void
+on_bv_btn_modifier_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *bv_modifier = create_bv_modifier();
+	GtkWidget *bv = lookup_widget(button, "bv");
+	gtk_widget_show(bv_modifier);
+	gtk_widget_hide(bv);
+	bv_ajout_mode=1;
+}
+
+
+void
+on_bv_button_supprimer_clicked         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	int x;
+    GtkWidget *bv_supprime = lookup_widget(button, "bv_supprimer");   
+    GtkWidget *bv_supprimer = lookup_widget(button, "bv_inp_supprimer");
+    char* id = gtk_entry_get_text(bv_supprimer);
+    x=test("bv.txt", atoi(id));
+    if(x==0)
+    {
+    supprimer_bv("bv.txt",atoi(id));
+    GtkWidget* dialog = gtk_message_dialog_new (bv_supprime,
+                              GTK_DIALOG_DESTROY_WITH_PARENT,
+                              GTK_MESSAGE_INFO,
+                              GTK_BUTTONS_CLOSE,
+                              "Le bv '%s' a ete supprimer avec succes", id);
+     gtk_dialog_run (GTK_DIALOG (dialog));
+     gtk_widget_destroy (dialog);
+     }
+     else
+     {
+     GtkWidget* dialog = gtk_message_dialog_new (bv_supprime,
+                              GTK_DIALOG_DESTROY_WITH_PARENT,
+                              GTK_MESSAGE_INFO,
+                              GTK_BUTTONS_CLOSE,
+                              "id n'existe pas");
+     gtk_dialog_run (GTK_DIALOG (dialog));
+     gtk_widget_destroy (dialog);
+     }
+}
+
+
+
+void
+on_bv_modif_btn_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	int x;
+	BureauDeVote bv;
+        GtkWidget *bv_modifier = lookup_widget(button, "bv_modifier"); 
+        GtkWidget *bv_modifie = lookup_widget(button, "bv_inp_modifier");
+        char* id_modifie = gtk_entry_get_text(bv_modifie);
+        
+        bv=chercher_bv("bv.txt",atoi(id_modifie));
+        x=test("bv.txt", atoi(id_modifie));
+        if (x==1)
+        {
+	GtkWidget* dialog = gtk_message_dialog_new (bv_modifier,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "id n'existe pas");
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+        }
+        else
+        {
+	GtkWidget *bv_ajout = create_bv_ajout();
+	gtk_widget_show(bv_ajout);
+	gtk_widget_hide(bv_modifier);
+        
+	GtkWidget *bv_ajoutid = lookup_widget(bv_ajout, "bv_ajoutId");
+	GtkWidget *bv_adresse= lookup_widget(bv_ajout, "bv_adresse");
+        GtkWidget *bv_ajout_combobox= lookup_widget(bv_ajout, "bv_ajout_combobox");
+	GtkWidget *bv_salle_spin = lookup_widget(bv_ajout, "bv_salle_spin");
+        GtkWidget *bv_ajoutidagent = lookup_widget(bv_ajout, "bv_ajoutidagent");
+        GtkWidget *bv_radio1 = lookup_widget(bv_ajout, "bv_radio1");
+        GtkWidget *bv_radio2 = lookup_widget(bv_ajout, "bv_radio2");
+        GtkWidget *bv_radio3 = lookup_widget(bv_ajout, "bv_radio3");
+        GtkWidget *bv_radio4 = lookup_widget(bv_ajout, "bv_radio4");
+        
+        char temp[50];
+        sprintf(temp , "%d" ,bv.id);
+	gtk_entry_set_text(GTK_ENTRY(bv_ajoutid),temp);
+	gtk_entry_set_text(GTK_ENTRY(bv_adresse),bv.adresse);
+        sprintf(temp , "%d" ,bv.id_agent);
+	gtk_entry_set_text(GTK_ENTRY(bv_ajoutidagent),temp);
+        if(bv.capacite_ob == 1)
+               gtk_toggle_button_set_active(bv_radio1,TRUE);
+	if(bv.capacite_ob == 2)
+               gtk_toggle_button_set_active(bv_radio2,TRUE);
+	if(bv.capacite_ob == 3)
+               gtk_toggle_button_set_active(bv_radio3,TRUE);
+	if(bv.capacite_ob == 4)
+               gtk_toggle_button_set_active(bv_radio4,TRUE);
+
+	gtk_combo_box_set_active(bv_ajout_combobox,bv.capacite_el);
+	gtk_spin_button_set_value(bv_salle_spin,bv.salle);
+	}
+}
+
+
+void
+on_bv_ajout_btn_ret_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_bv();
+	GtkWidget *curr = lookup_widget(button, "bv_ajout");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_bv_supp_btn_ret_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_bv();
+	GtkWidget *curr = lookup_widget(button, "bv_supprimer");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_bv_modifier_btn_ret_clicked         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_bv();
+	GtkWidget *curr = lookup_widget(button, "bv_modifier");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_bv_aff_btn_ret_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_bv();
+	GtkWidget *curr = lookup_widget(button, "bv_affichage");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_bv_btn_ret_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_gestion_admin();
+	GtkWidget *curr = lookup_widget(button, "bv");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+void
+on_statistics_btn_ret_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *next = create_gestion_entry();
+	GtkWidget *curr = lookup_widget(button, "statistics");
+	gtk_widget_show(next);
+	gtk_widget_hide(curr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

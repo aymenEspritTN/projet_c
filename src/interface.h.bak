@@ -3,8 +3,8 @@
  */
 
 GtkWidget* create_gestion_entry (void);
-GtkWidget* create_GE (void);
-GtkWidget* create_GE_ajouter (void);
+GtkWidget* create_ge (void);
+GtkWidget* create_ge_ajouter (void);
 GtkWidget* create_bv (void);
 GtkWidget* create_bv_ajout (void);
 GtkWidget* create_bv_supprimer (void);
@@ -16,17 +16,14 @@ GtkWidget* create_le_supprimer (void);
 GtkWidget* create_le_modifier (void);
 GtkWidget* create_le_affichage (void);
 GtkWidget* create_user (void);
-GtkWidget* create_User_ajout (void);
-GtkWidget* create_user_affichage (void);
-GtkWidget* create_user_supprimer (void);
-GtkWidget* create_user_modifier (void);
+GtkWidget* create_user_ajout (void);
 GtkWidget* create_ObsAjout (void);
 GtkWidget* create_Obs (void);
-GtkWidget* create_ObsAffiche (void);
-GtkWidget* create_ObsSupprimer (void);
-GtkWidget* create_GE_supprimer (void);
-GtkWidget* create_GE_modifier (void);
 GtkWidget* create_auth (void);
 GtkWidget* create_gestion_admin (void);
-GtkWidget* create_GE_affichier (void);
 GtkWidget* create_le_vote (void);
+GtkWidget* create_statistics (void);
+GtkWidget* create_loading_window (void);
+GtkWidget* create_ge_modifier (void);
+GtkWidget* create_ge_supprimer (void);
+GtkWidget* create_ge_affichier (void);

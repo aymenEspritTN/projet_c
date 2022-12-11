@@ -101,7 +101,9 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_gestionelection_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
 	interface.$(OBJEXT) callbacks.$(OBJEXT) \
-	liste_electorale.$(OBJEXT)
+	bureau_de_vote.$(OBJEXT) bv_stats.$(OBJEXT) election.$(OBJEXT) \
+	election_calcul.$(OBJEXT) liste_electorale.$(OBJEXT) \
+	le_stats.$(OBJEXT)
 gestionelection_OBJECTS = $(am_gestionelection_OBJECTS)
 am__DEPENDENCIES_1 =
 gestionelection_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -283,7 +285,9 @@ gestionelection_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	liste_electorale.c liste_electorale.h
+	bureau_de_vote.c bureau_de_vote.h bv_stats.c bv_stats.h\
+	election.c election.h election_calcul.c election_calcul.h\
+	liste_electorale.c liste_electorale.h le_stats.c
 
 gestionelection_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS)
 all: all-am
@@ -372,8 +376,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/bureau_de_vote.Po
+include ./$(DEPDIR)/bv_stats.Po
 include ./$(DEPDIR)/callbacks.Po
+include ./$(DEPDIR)/election.Po
+include ./$(DEPDIR)/election_calcul.Po
 include ./$(DEPDIR)/interface.Po
+include ./$(DEPDIR)/le_stats.Po
 include ./$(DEPDIR)/liste_electorale.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/support.Po
