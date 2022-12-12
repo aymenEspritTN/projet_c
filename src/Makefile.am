@@ -14,6 +14,7 @@ gestionelection_SOURCES = \
 	callbacks.c callbacks.h \
 	bureau_de_vote.c bureau_de_vote.h bv_stats.c bv_stats.h\
 	election.c election.h election_calcul.c election_calcul.h\
+	user.c user.h\
 	liste_electorale.c liste_electorale.h le_stats.c
 
 gestionelection_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)

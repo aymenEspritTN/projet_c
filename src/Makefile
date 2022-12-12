@@ -102,8 +102,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_gestionelection_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
 	interface.$(OBJEXT) callbacks.$(OBJEXT) \
 	bureau_de_vote.$(OBJEXT) bv_stats.$(OBJEXT) election.$(OBJEXT) \
-	election_calcul.$(OBJEXT) liste_electorale.$(OBJEXT) \
-	le_stats.$(OBJEXT)
+	election_calcul.$(OBJEXT) user.$(OBJEXT) \
+	liste_electorale.$(OBJEXT) le_stats.$(OBJEXT)
 gestionelection_OBJECTS = $(am_gestionelection_OBJECTS)
 am__DEPENDENCIES_1 =
 gestionelection_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -163,12 +163,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/aymen/Desktop/projet_c/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/aymen/projet_c/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/aymen/Desktop/projet_c/missing autoconf
-AUTOHEADER = ${SHELL} /home/aymen/Desktop/projet_c/missing autoheader
-AUTOMAKE = ${SHELL} /home/aymen/Desktop/projet_c/missing automake-1.15
+AUTOCONF = ${SHELL} /home/aymen/projet_c/missing autoconf
+AUTOHEADER = ${SHELL} /home/aymen/projet_c/missing autoheader
+AUTOMAKE = ${SHELL} /home/aymen/projet_c/missing automake-1.15
 AWK = mawk
 CATALOGS = 
 CATOBJEXT = .gmo
@@ -203,7 +203,7 @@ LIBOBJS =
 LIBS = 
 LTLIBOBJS = 
 MAINT = 
-MAKEINFO = ${SHELL} /home/aymen/Desktop/projet_c/missing makeinfo
+MAKEINFO = ${SHELL} /home/aymen/projet_c/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
@@ -232,10 +232,10 @@ STRIP =
 USE_NLS = yes
 VERSION = 0.1
 XGETTEXT = /usr/bin/xgettext
-abs_builddir = /home/aymen/Desktop/projet_c/src
-abs_srcdir = /home/aymen/Desktop/projet_c/src
-abs_top_builddir = /home/aymen/Desktop/projet_c
-abs_top_srcdir = /home/aymen/Desktop/projet_c
+abs_builddir = /home/aymen/projet_c/src
+abs_srcdir = /home/aymen/projet_c/src
+abs_top_builddir = /home/aymen/projet_c
+abs_top_srcdir = /home/aymen/projet_c
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -254,7 +254,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/aymen/Desktop/projet_c/install-sh
+install_sh = ${SHELL} /home/aymen/projet_c/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -287,6 +287,7 @@ gestionelection_SOURCES = \
 	callbacks.c callbacks.h \
 	bureau_de_vote.c bureau_de_vote.h bv_stats.c bv_stats.h\
 	election.c election.h election_calcul.c election_calcul.h\
+	user.c user.h\
 	liste_electorale.c liste_electorale.h le_stats.c
 
 gestionelection_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS)
@@ -386,6 +387,7 @@ include ./$(DEPDIR)/le_stats.Po
 include ./$(DEPDIR)/liste_electorale.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/support.Po
+include ./$(DEPDIR)/user.Po
 
 .c.o:
 	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

@@ -10,12 +10,14 @@
 #include "liste_electorale.h"
 #include "bureau_de_vote.h"
 #include "election.h"
+#include "user.h"
 
 //0 = AJOUT, 1 = MODIFIER
 int le_ajout_mode = 0;
 int bv_ajout_mode=0;
 int ge_ajout_mode = 0;
 
+char* id_modifie; 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1329,8 +1331,7 @@ void
 on_bv_ajout_addbtn_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
-
-        int x,y,tst,tst2;
+int x,y,tst,tst2;
         
 	GtkWidget *bv_ajout = lookup_widget(button, "bv_ajout");
 	GtkWidget *bv_ajoutid = lookup_widget(button, "bv_ajoutId");
@@ -1530,6 +1531,7 @@ on_bv_modif_btn_clicked                (GtkButton       *button,
 	gtk_widget_show(bv_ajout);
 	gtk_widget_hide(bv_modifier);
         
+        GtkWidget *bv_ajout_addbtn = lookup_widget(bv_ajout, "bv_ajout_addbtn");
 	GtkWidget *bv_ajoutid = lookup_widget(bv_ajout, "bv_ajoutId");
 	GtkWidget *bv_adresse= lookup_widget(bv_ajout, "bv_adresse");
         GtkWidget *bv_ajout_combobox= lookup_widget(bv_ajout, "bv_ajout_combobox");
@@ -1557,6 +1559,7 @@ on_bv_modif_btn_clicked                (GtkButton       *button,
 
 	gtk_combo_box_set_active(bv_ajout_combobox,bv.capacite_el);
 	gtk_spin_button_set_value(bv_salle_spin,bv.salle);
+        gtk_button_set_label(GTK_BUTTON(bv_ajout_addbtn), "Modifier");
 	}
 }
 
@@ -1655,4 +1658,383 @@ on_statistics_btn_ret_clicked          (GtkButton       *button,
 
 
 
+
+
+void
+on_button_aj_clicked                   (GtkWidget      *objet,
+                                        gpointer         user_data)
+{
+GtkWidget *aj1, *aj2, *aj3, *aj4, *aj5, *aj6, *aj7, *aj8, *aj9, *aj10, *aj11, *aj12, *aj13, *aj14, *pInfo;
+ut u;
+char ch[100];
+strcpy(ch, "");
+aj1=lookup_widget(objet,"aj1");
+aj2=lookup_widget(objet,"aj2");
+aj3=lookup_widget(objet,"aj3");
+aj4=lookup_widget(objet,"aj4");
+aj5=lookup_widget(objet,"aj5");
+aj6=lookup_widget(objet,"aj6");
+aj7=lookup_widget(objet,"aj7");
+aj8=lookup_widget(objet,"aj8");
+aj9=lookup_widget(objet,"aj9");
+aj10=lookup_widget(objet,"aj10");
+aj11=lookup_widget(objet,"aj11");
+aj12=lookup_widget(objet,"aj12");
+aj13=lookup_widget(objet,"aj13");
+aj14=lookup_widget(objet,"aj14");
+bool a=gtk_toggle_button_get_active(GTK_CHECK_BUTTON(aj13));
+u.cin=atoi(gtk_entry_get_text(GTK_ENTRY(aj1)));
+strcpy(u.nom,gtk_entry_get_text(GTK_ENTRY(aj2)));
+strcpy(u.prenom,gtk_entry_get_text(GTK_ENTRY(aj3)));
+strcpy(u.email,gtk_entry_get_text(GTK_ENTRY(aj4)));
+strcpy(u.pw,gtk_entry_get_text(GTK_ENTRY(aj5)));
+u.bv = atoi(gtk_entry_get_text(GTK_ENTRY(aj6)));
+u.sexe=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(aj7))?0:1;
+u.d.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj9));
+u.d.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj10));
+u.d.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj11));
+u.vote=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj12));
+strcpy(u.role,gtk_entry_get_text(GTK_ENTRY(aj14)));
+
+if(!Check_Email_Addr(u.email))
+strcat(ch, "Email invalide\n");
+if(!valid_cin(gtk_entry_get_text(GTK_ENTRY(aj1))))
+strcat(ch, "CIN invalide\n");
+if(!a)
+strcat(ch, "Veuillez confirmer");
+if(strcmp(ch,"")==0)
+ajouter(u, "user.txt");
+else{
+pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_WARNING,GTK_BUTTONS_OK,ch);
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_OK:
+	gtk_widget_destroy(pInfo);
+	break;
+	}
+}
+
+}
+
+
+void
+on_user_quit_aj_clicked                (GtkButton      *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *user;
+	GtkWidget *aj;
+	aj=lookup_widget(button,"aj");
+	gtk_widget_destroy(aj);
+	user=lookup_widget(button,"user");
+	user=create_user();
+	gtk_widget_show(user);
+}
+
+
+void
+on_user_ajout_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *user;
+	GtkWidget *aj;
+	user=lookup_widget(button,"user");
+	gtk_widget_destroy(user);
+	aj=lookup_widget(button,"aj");
+	aj=create_aj();
+	gtk_widget_show(aj);
+
+}
+
+
+void
+on_user_modifier_clicked               (GtkButton      *button,
+                                        gpointer         user_data)
+{
+
+	GtkWidget *user;
+	GtkWidget *modif;
+	user=lookup_widget(button,"user");
+	gtk_widget_destroy(user);
+	modif=lookup_widget(button,"modif");
+	modif=create_modif();
+	gtk_widget_show(modif);
+}
+
+
+void
+on_user_affichier_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+	GtkWidget *user;
+	GtkWidget *aff;
+	user=lookup_widget(button,"user");
+	gtk_widget_destroy(user);
+	aff=lookup_widget(button,"aff");
+	aff=create_aff();
+	gtk_widget_show(aff);
+	GtkWidget *treeview;
+	treeview=lookup_widget(aff,"treeview");
+	afficher(treeview,"user.txt", "", "", "");
+
+
+}
+
+
+void
+on_button_mod_clicked                  (GtkWidget       *objet,
+                                        gpointer         user_data)
+{
+GtkWidget *mod1, *mod2, *mod3, *mod4, *mod5, *mod6, *mod7, *mod8, *mod9, *mod10, *mod11, *mod12, *mod13, *mod14, *pInfo;
+ut u;
+mod1=lookup_widget(objet,"mod1");
+mod2=lookup_widget(objet,"mod2");
+mod3=lookup_widget(objet,"mod3");
+mod4=lookup_widget(objet,"mod4");
+mod5=lookup_widget(objet,"mod5");
+mod6=lookup_widget(objet,"mod6");
+mod7=lookup_widget(objet,"mod7");
+mod8=lookup_widget(objet,"mod8");
+mod9=lookup_widget(objet,"mod9");
+mod10=lookup_widget(objet,"mod10");
+mod11=lookup_widget(objet,"mod11");
+mod12=lookup_widget(objet,"mod12");
+mod13=lookup_widget(objet,"mod13");
+mod14=lookup_widget(objet,"mod14");
+u.cin=atoi(gtk_entry_get_text(GTK_ENTRY(mod1)));
+strcpy(u.role,gtk_entry_get_text(GTK_ENTRY(mod14)));
+strcpy(u.nom,gtk_entry_get_text(GTK_ENTRY(mod2)));
+strcpy(u.prenom,gtk_entry_get_text(GTK_ENTRY(mod3)));
+strcpy(u.email,gtk_entry_get_text(GTK_ENTRY(mod4)));
+strcpy(u.pw,gtk_entry_get_text(GTK_ENTRY(mod5)));
+u.bv = atoi(gtk_entry_get_text(GTK_ENTRY(mod6)));
+u.sexe=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mod7))?0:1;
+u.d.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod9));
+u.d.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod10));
+u.d.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod11));
+u.vote=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod12));
+bool a=gtk_toggle_button_get_active(GTK_CHECK_BUTTON(mod13));
+if(a)
+modifier(u,"user.txt");
+else{
+pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_WARNING,GTK_BUTTONS_OK,"Veuillez confirmer");
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_OK:
+	gtk_widget_destroy(pInfo);
+	break;
+	}
+}
+
+}
+
+
+void
+on_user_quit_mod_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *user;
+	GtkWidget *modif;
+	modif=lookup_widget(button,"modif");
+	gtk_widget_destroy(modif);
+	user=lookup_widget(button,"user");
+	user=create_user();
+	gtk_widget_show(user);
+
+}
+
+
+void
+on_check_id_clicked                    (GtkWidget       *objet,
+                                        gpointer         user_data)
+{
+GtkWidget *mod1, *mod2, *mod3, *mod4, *mod5, *mod6, *mod7, *mod8, *mod9, *mod10, *mod11, *mod12, *mod13, *mod14, *pInfo;
+int a=0;
+int id;
+char bv[10], role[20];
+FILE *f;
+mod1=lookup_widget(objet,"mod1");
+mod2=lookup_widget(objet,"mod2");
+mod3=lookup_widget(objet,"mod3");
+mod4=lookup_widget(objet,"mod4");
+mod5=lookup_widget(objet,"mod5");
+mod6=lookup_widget(objet,"mod6");
+mod7=lookup_widget(objet,"mod7");
+mod8=lookup_widget(objet,"mod8");
+mod9=lookup_widget(objet,"mod9");
+mod10=lookup_widget(objet,"mod10");
+mod11=lookup_widget(objet,"mod11");
+mod12=lookup_widget(objet,"mod12");
+mod13=lookup_widget(objet,"mod13");
+mod14=lookup_widget(objet,"mod14");
+id = atoi(gtk_entry_get_text(GTK_ENTRY(mod1)));
+ut p = chercher(id, "user.txt");
+if(p.cin!=-1){
+sprintf(bv,"%d",p.bv);
+sprintf(role,"%s",p.role);
+gtk_entry_set_text(GTK_ENTRY(mod2),p.nom);
+gtk_entry_set_text(GTK_ENTRY(mod3),p.prenom);
+gtk_entry_set_text(GTK_ENTRY(mod4),p.email);
+gtk_entry_set_text(GTK_ENTRY(mod5),p.pw);
+gtk_entry_set_text(GTK_ENTRY(mod6),bv);
+gtk_entry_set_text(GTK_ENTRY(mod14),role);
+gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod7),p.sexe==0?TRUE:FALSE);
+gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod8),p.sexe==0?FALSE:TRUE);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod9),p.d.jour);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod10),p.d.mois);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod11),p.d.an);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod12),p.vote);
+}
+else{
+pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_ERROR,GTK_BUTTONS_OK,"Utilisateur introuvable");
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_OK:
+	gtk_widget_destroy(pInfo);
+	break;
+	}
+}
+
+}
+
+
+void
+on_treeview_row_activated              (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data)
+{
+GtkTreeIter iter;
+	guint id;
+	ut u;
+	GtkWidget *pInfo, *objet, *af;
+	GtkTreeModel *model=gtk_tree_view_get_model(treeview);
+	if(gtk_tree_model_get_iter(model,&iter,path)){
+	gtk_tree_model_get(GTK_LIST_STORE(model),&iter,0,&id,-1);
+	u.cin=id;
+	pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_QUESTION,GTK_BUTTONS_YES_NO,"Voulez-vous vraiment\nsupprimer cet utilisateur?");
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_YES:
+	gtk_widget_destroy(pInfo);
+	supprimer(u,"user.txt");
+	afficher(treeview,"user.txt", "", "", "");
+	break;
+	case GTK_RESPONSE_NO:
+	gtk_widget_destroy(pInfo);
+	break;
+}	
+}
+
+}
+
+
+void
+on_button7_clicked                     (GtkWidget       *objet,
+                                        gpointer         user_data)
+{
+GtkWidget *treeview, *af, *e1, *e2, *e3;
+char id[10], email[50], nom[20];
+af=lookup_widget(objet,"af");
+treeview=lookup_widget(af,"treeview");
+e1=lookup_widget(objet, "entry1");
+e2=lookup_widget(objet, "entry2");
+e3=lookup_widget(objet, "entry3");
+strcpy(id,gtk_entry_get_text(GTK_ENTRY(e1)));
+strcpy(email,gtk_entry_get_text(GTK_ENTRY(e2)));
+strcpy(nom,gtk_entry_get_text(GTK_ENTRY(e3)));
+afficher(treeview, "user.txt", id, email, nom);
+}
+
+
+void
+on_button8_clicked                     (GtkWidget       *objet,
+                                        gpointer         user_data)
+{
+GtkWidget *pInfo;
+char *ch = age_moyen("user.txt");
+pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,ch);
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_OK:
+	gtk_widget_destroy(pInfo);
+	break;
+	}
+}
+
+
+void
+on_button9_activate                    (GtkButton      *button,
+                                        gpointer         user_data)
+{
+GtkWidget *pInfo;
+char *ch = e_bv("user.txt");
+pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,ch);
+	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
+	{
+	case GTK_RESPONSE_OK:
+	gtk_widget_destroy(pInfo);
+	break;
+	}
+
+}
+
+
+void
+on_user_quit_aff_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *user;
+	GtkWidget *af;
+	af=lookup_widget(button,"af");
+	gtk_widget_destroy(af);
+	user=lookup_widget(button,"user");
+	user=create_user();
+	gtk_widget_show(user);
+
+}
+
+
+void
+on_bv_btn_search_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+BureauDeVote bv;
+    int x;
+    GtkWidget *bv_affichage=create_bv_affichage();
+    GtkWidget *bv_chercher = lookup_widget(button, "bv_aff_search");
+    char* id = gtk_entry_get_text(bv_chercher);
+    bv=chercher_bv("bv.txt", atoi(id));
+    x=test("bv.txt", atoi(id));
+    if(x==1 && (strlen(id)>0))
+{
+        GtkWidget* dialog = gtk_message_dialog_new (bv_affichage,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_INFO,
+                                  GTK_BUTTONS_CLOSE,
+                                  "id n'existe pas");
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
+else if(strlen(id)==0)
+{    GtkWidget *bv_aff_treev;
+    
+    GtkWidget *W1 = lookup_widget(button, "bv_affichage");
+    gtk_widget_show(bv_affichage);
+    gtk_widget_hide(W1);
+    bv_aff_treev=lookup_widget(bv_affichage,"bv_aff_treev");
+    affiche_bv(bv_aff_treev);
+}
+else 
+{
+    ajouter2_bv("bv2.txt",bv);	
+    GtkWidget *bv_aff_treev;
+    
+    GtkWidget *W1 = lookup_widget(button, "bv_affichage");
+    gtk_widget_show(bv_affichage);
+    gtk_widget_hide(W1);
+    bv_aff_treev=lookup_widget(bv_affichage,"bv_aff_treev");
+    affiche2_bv(bv_aff_treev);
+}
+}
 

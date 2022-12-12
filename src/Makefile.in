@@ -102,8 +102,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_gestionelection_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
 	interface.$(OBJEXT) callbacks.$(OBJEXT) \
 	bureau_de_vote.$(OBJEXT) bv_stats.$(OBJEXT) election.$(OBJEXT) \
-	election_calcul.$(OBJEXT) liste_electorale.$(OBJEXT) \
-	le_stats.$(OBJEXT)
+	election_calcul.$(OBJEXT) user.$(OBJEXT) \
+	liste_electorale.$(OBJEXT) le_stats.$(OBJEXT)
 gestionelection_OBJECTS = $(am_gestionelection_OBJECTS)
 am__DEPENDENCIES_1 =
 gestionelection_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -287,6 +287,7 @@ gestionelection_SOURCES = \
 	callbacks.c callbacks.h \
 	bureau_de_vote.c bureau_de_vote.h bv_stats.c bv_stats.h\
 	election.c election.h election_calcul.c election_calcul.h\
+	user.c user.h\
 	liste_electorale.c liste_electorale.h le_stats.c
 
 gestionelection_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
@@ -386,6 +387,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liste_electorale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/support.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/user.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

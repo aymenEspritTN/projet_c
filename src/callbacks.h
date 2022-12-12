@@ -240,3 +240,61 @@ on_statistics_btn_ret_clicked          (GtkButton       *button,
 void
 on_le_aff_search_btn_clicked           (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_button_aj_clicked                   (GtkWidget       *objet,
+                                        gpointer         user_data);
+
+void
+on_user_quit_aj_clicked                (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_user_ajout_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_user_modifier_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_user_affichier_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_button_mod_clicked                  (GtkWidget       *objet,
+                                        gpointer         user_data);
+
+void
+on_user_quit_mod_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_check_id_clicked                    (GtkWidget       *objet,
+                                        gpointer         user_data);
+
+void
+on_treeview_row_activated              (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data);
+
+void
+on_button7_clicked                     (GtkWidget       *objet,
+                                        gpointer         user_data);
+
+void
+on_button8_clicked                     (GtkWidget       *objet,
+                                        gpointer         user_data);
+
+void
+on_button9_activate                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_user_quit_aff_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_bv_btn_search_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
