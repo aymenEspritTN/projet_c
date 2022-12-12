@@ -34,8 +34,8 @@ main (int argc, char *argv[])
    * the project. Delete any components that you don't want shown initially.
    */
   All = //create_loading_window();
-	 //create_gestion_entry ();
-	create_gestion_admin();
+	 create_gestion_entry ();
+	//create_gestion_admin();
   gtk_widget_show (All);
 
   gtk_main ();

@@ -22,22 +22,22 @@ enum
 };
 
 
-void ajouter(ut u, char *fname){
+void ajouter(User u, char *fname){
 GtkWidget *pQuestion;
 FILE *f;
 int b=0;
 gpointer user_data;
-ut p;
+User p;
 f=fopen(fname,"a+");
 if(f!=NULL)
 {	
-	while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+	while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{	
 		if(u.cin==p.cin)
 		b=1;
 	}
 	if(b==0){
-	fprintf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",u.cin,u.nom,u.prenom,u.email,u.pw,u.sexe,u.role,u.vote,u.bv,u.d.jour,u.d.mois,u.d.an);
+	fprintf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",u.cin,u.nom,u.prenom,u.email,u.pw,u.sexe,u.role,u.vote,u.bv,u.date.jour,u.date.mois,u.date.an);
 	}
 	pQuestion=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,b==0?GTK_MESSAGE_INFO:GTK_MESSAGE_WARNING,GTK_BUTTONS_OK,b==0?"Utilisateur ajouté avec succès !":"Utilisateur déja existant !");
 	switch(gtk_dialog_run(GTK_DIALOG(pQuestion)))
@@ -50,8 +50,8 @@ if(f!=NULL)
 }
 }
 
-void modifier(ut u, char *fname){
-ut p;
+void modifier(User u, char *fname){
+User p;
 GtkWidget *pInfo;
 gpointer user_data;
 FILE *f, *g;
@@ -62,12 +62,12 @@ if(f==NULL||g==NULL)
 	return;
 }
 else{
-	while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+	while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{
 		if(p.cin!=u.cin)
-			fprintf(g,"%d %s %s %s %s %d %s %d %d %d %d %d\n",p.cin,p.nom,p.prenom,p.email,p.pw,p.sexe,p.role,p.vote,p.bv,p.d.jour,p.d.mois,p.d.an);
+			fprintf(g,"%d %s %s %s %s %d %d %d %d %d %d %d\n",p.cin,p.nom,p.prenom,p.email,p.pw,p.sexe,p.role,p.vote,p.bv,p.date.jour,p.date.mois,p.date.an);
 		else
-			fprintf(g,"%d %s %s %s %s %d %s %d %d %d %d %d\n",u.cin,u.nom,u.prenom,u.email,u.pw,u.sexe,u.role,u.vote,u.bv,u.d.jour,u.d.mois,u.d.an);
+			fprintf(g,"%d %s %s %s %s %d %d %d %d %d %d %d\n",u.cin,u.nom,u.prenom,u.email,u.pw,u.sexe,u.role,u.vote,u.bv,u.date.jour,u.date.mois,u.date.an);
 	}
 	pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Utilisateur modifié avec succès !");
 	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
@@ -85,7 +85,7 @@ rename("dump.txt",fname);
 
 void afficher(GtkWidget *liste, char *fname, char *id, char *email, char *nom)
 {
-ut p;
+User p;
 GtkCellRenderer *renderer;
 GtkTreeViewColumn *column;
 GtkTreeIter iter;
@@ -147,10 +147,10 @@ if (strcmp(id,"")==0&&strcmp(email,"")==0&&strcmp(nom,"")==0){
 f=fopen(fname,"r");
 if(f!=NULL)
 { f = fopen(fname,"a+");
-		while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+		while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{
 sprintf(np, "%s %s", p.nom, p.prenom);
-sprintf(date,"%d/%d/%d",p.d.jour,p.d.mois,p.d.an);
+sprintf(date,"%d/%d/%d",p.date.jour,p.date.mois,p.date.an);
 sprintf(sexe,p.sexe==0?"Homme":"Femme");
 gtk_list_store_append(store,&iter);
 gtk_list_store_set(store,&iter,CIN,p.cin,NOM_PRENOM,np,EMAIL,p.email,BV,p.bv,SEXE,sexe,VOTE,p.vote,ROLE,p.role,DATE,date,-1);
@@ -164,11 +164,11 @@ else{
 f=fopen(fname,"r");
 if(f!=NULL)
 { f = fopen(fname,"a+");
-		while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+		while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{
 if(p.cin==atoi(id)||strcmp(p.email,email)==0||strcmp(p.nom,nom)==0){
 sprintf(np, "%s %s", p.nom, p.prenom);
-sprintf(date,"%d/%d/%d",p.d.jour,p.d.mois,p.d.an);
+sprintf(date,"%d/%d/%d",p.date.jour,p.date.mois,p.date.an);
 sprintf(sexe,p.sexe==0?"Homme":"Femme");
 gtk_list_store_append(store,&iter);
 gtk_list_store_set(store,&iter,CIN,p.cin,NOM_PRENOM,np,EMAIL,p.email,BV,p.bv,SEXE,sexe,VOTE,p.vote,ROLE,p.role,DATE,date,-1);
@@ -187,19 +187,19 @@ gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(liste),TRUE);
 gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(liste),GTK_TREE_VIEW_GRID_LINES_BOTH);
 }
 
-void supprimer(ut u, char *fname)
+void supprimer(User u, char *fname)
 {
-ut p;
+User p;
 GtkWidget *pInfo;
 gpointer user_data;
 FILE *f, *g;
 f=fopen(fname,"r");
 g=fopen("dump.txt","w");
 if(f!=NULL&&g!=NULL){
-	while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+	while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{
 		if(p.cin!=u.cin)
-			fprintf(g,"%d %s %s %s %s %d %s %d %d %d %d %d\n",p.cin,p.nom,p.prenom,p.email,p.pw,p.sexe,p.role,p.vote,p.bv,p.d.jour,p.d.mois,p.d.an);
+			fprintf(g,"%d %s %s %s %s %d %d %d %d %d %d %d\n",p.cin,p.nom,p.prenom,p.email,p.pw,p.sexe,p.role,p.vote,p.bv,p.date.jour,p.date.mois,p.date.an);
 	}
 	pInfo=gtk_message_dialog_new(GTK_WINDOW(user_data),GTK_DIALOG_MODAL,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Utilisateur supprimé avec succès");
 	switch(gtk_dialog_run(GTK_DIALOG(pInfo)))
@@ -215,34 +215,39 @@ rename("dump.txt",fname);
 }
 }
 
-ut chercher(int id, char *fname){
-FILE *f;
-ut p, e={cin:-1};
-f=fopen(fname,"r");
-if(f!=NULL)
+
+User chercher(int id, char *filename)
 {
-	while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+	User p;
+	int tr = 0;
+	FILE * f=fopen(filename, "r");
+	if(f!=NULL)
 	{
-	if(p.cin==id)
-            return p;
+		while(tr==0 && fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n"
+				,&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe)
+				,&(p.role),&(p.vote),&(p.bv),&(p.date.jour)
+				,&(p.date.mois),&(p.date.an))!=EOF)
+		{
+		    if(p.cin== id)tr=1;
+		}
 	}
 	fclose(f);
-}
-    return e;
-
+	if(tr==0)
+		p.cin=-1;
+	return p;
 }
 
 char* age_moyen(char *filename){
 FILE *f=fopen(filename,"r");
-ut p;
+User p;
 int s=0, c=0;
 if(f!=0){ 
              
-while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 {
       if(p.role==1&&p.vote!=-1){
 	c++;
-      	s+=(2022-p.d.an);
+      	s+=(2022-p.date.an);
 }
 }
 fclose(f);
@@ -254,13 +259,13 @@ return ch;
 char* e_bv(char *fname){
 FILE *f;
 f=fopen(fname,"r");
-ut p;
+User p;
 int x[100][2] = {};
 int b, c=0, n = 0;
 char* ch = malloc(500);
 char tmp[50];
 strcpy(ch, "");
-while(fscanf(f,"%d %s %s %s %s %d %s %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),(p.role),&(p.vote),&(p.bv),&(p.d.jour),&(p.d.mois),&(p.d.an))!=EOF)
+while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n",&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 	{
 		b=0;
 		for (int i=0;i<100;i++){
@@ -305,7 +310,7 @@ char conv_buf[50];
 char *c, *domain;
 char *special_chars = "()<>@,;:\"[]";
 
-/* The input is in EBCDIC so convert to ASCII first */
+/* The inpUser is in EBCDIC so convert to ASCII first */
 strcpy(conv_buf,EM_Addr);
 
 for(c = conv_buf; *c; c++) {

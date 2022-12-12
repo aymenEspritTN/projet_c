@@ -17,18 +17,18 @@ char prenom[30];
 char email[40];
 char pw[15];
 int sexe;
-char role[15];
+int role;
 int vote;
 int bv;
-Date d;
-}ut;
+Date date;
+} User;
 
 
-void ajouter(ut u, char *fname);
-void supprimer(ut u, char *fname);
-void modifier(ut u, char *fname);
+void ajouter(User u, char *fname);
+void supprimer(User u, char *fname);
+void modifier(User u, char *fname);
 void afficher(GtkWidget *liste, char *fname, char *id, char *email, char *nom);
-ut chercher(int id, char *fname);
+User chercher(int id, char *fname);
 char* age_moyen(char *filename);
 char* e_bv(char *filename);
 int Check_Email_Addr(char *EM_Addr);

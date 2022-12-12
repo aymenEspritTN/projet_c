@@ -1,8 +1,9 @@
 
 #include <stdlib.h>
 #include "liste_electorale.h"
+#include "user.h"
 
-int L_ordre(char *fichierListeElectorale, ListeElectorale t[], char * fichierusers)
+int L_ordre(char *fichierListeElectorale, ListeElectorale *ts[], char * fichierusers)
 {
 	int nbre=0;
 	ListeElectorale le;
@@ -21,7 +22,8 @@ int L_ordre(char *fichierListeElectorale, ListeElectorale t[], char * fichieruse
 	}
 	fclose(f);
 	
-	t = malloc(sizeof(ListeElectorale) * nbre);
+	*ts = malloc(sizeof(ListeElectorale) * nbre);
+	ListeElectorale* t = *ts;
 	
 	int k=0;
 	f = fopen(fichierListeElectorale, "r");
@@ -69,17 +71,18 @@ int L_ordre(char *fichierListeElectorale, ListeElectorale t[], char * fichieruse
 
 	return nbre;
 }
-int nbv (char * filename, int idListe)
+int nbv (char * fichierusers, int idListe)
 {
 	int nbre=0;
-	User u;
-	FILE* f = fopen(filename, "r");
+	User p;
+	FILE* f = fopen(fichierusers, "r");
 	if(f!=NULL)
 	{
-		while(fscanf(f,"%d %s %s %d %d %d %s %s %d %d %d %d\n", 
-			&u.cin, u.nom, u.prenom, &u.role, &u.lieu, &u.numbv, u.login, u.pass, 				&u.date.jour, &u.date.mois, &u.date.an, &u.vote)!=EOF)
+		while(fscanf(f,"%d %s %s %s %s %d %d %d %d %d %d %d\n"
+			,&(p.cin),p.nom,p.prenom,p.email,p.pw,&(p.sexe),
+			&(p.role),&(p.vote),&(p.bv),&(p.date.jour),&(p.date.mois),&(p.date.an))!=EOF)
 		{
-			if(u.vote == idListe)
+			if(p.vote == idListe)
 				nbre+=1;
 		}
 	}

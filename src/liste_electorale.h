@@ -29,7 +29,7 @@ typedef enum
 	admin, utilisateur, observateur, electeur
 } roles;
 
-typedef struct
+/*typedef struct
 {
 	int cin;
 	char nom[20];
@@ -41,7 +41,7 @@ typedef struct
 	int numbv;
 	Date date;
 	int vote;
-} User;
+} User;*/
 
 
 ListeElectorale* load_le(char* filename);
@@ -50,7 +50,7 @@ int modifier_le(char* filename, int id, ListeElectorale nouv);
 int supprimer_le(char* filename, int id);
 ListeElectorale chercher_le(char* filename, int id);
 
-int L_ordre( char *fichierListeElectorale, ListeElectorale t[], char * fichierusers);
+int L_ordre( char *fichierListeElectorale, ListeElectorale *t[], char * fichierusers);
 int nbv (char * filename, int idListe);
 
 char* DateToString(Date date);

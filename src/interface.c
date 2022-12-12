@@ -2211,9 +2211,15 @@ create_statistics (void)
   GtkWidget *fixed38;
   GtkWidget *statistics_btn_ret;
   GtkWidget *image58;
-  GtkWidget *label336;
-  GtkWidget *label345;
   GtkWidget *image61;
+  GtkWidget *scrolledwindow7;
+  GtkWidget *statistics_label_bv;
+  GtkWidget *label345;
+  GtkWidget *scrolledwindow5;
+  GtkWidget *statistics_label_le;
+  GtkWidget *scrolledwindow8;
+  GtkWidget *label378;
+  GtkWidget *label336;
 
   statistics = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (statistics), _("Statistiques"));
@@ -2232,20 +2238,62 @@ create_statistics (void)
   gtk_widget_show (image58);
   gtk_container_add (GTK_CONTAINER (statistics_btn_ret), image58);
 
-  label336 = gtk_label_new (_("2022"));
-  gtk_widget_show (label336);
-  gtk_fixed_put (GTK_FIXED (fixed38), label336, 736, 256);
-  gtk_widget_set_size_request (label336, 57, 17);
+  image61 = create_pixmap (statistics, "data.gif");
+  gtk_widget_show (image61);
+  gtk_fixed_put (GTK_FIXED (fixed38), image61, 304, 536);
+  gtk_widget_set_size_request (image61, 344, 328);
+
+  scrolledwindow7 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow7);
+  gtk_fixed_put (GTK_FIXED (fixed38), scrolledwindow7, 520, 80);
+  gtk_widget_set_size_request (scrolledwindow7, 384, 208);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow7), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+
+  statistics_label_bv = gtk_label_new (_("Statistiques Bureau de votes"));
+  gtk_widget_show (statistics_label_bv);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow7), statistics_label_bv);
+  gtk_widget_set_size_request (statistics_label_bv, 440, 152);
+  gtk_label_set_use_markup (GTK_LABEL (statistics_label_bv), TRUE);
+  gtk_label_set_justify (GTK_LABEL (statistics_label_bv), GTK_JUSTIFY_CENTER);
+  gtk_label_set_line_wrap (GTK_LABEL (statistics_label_bv), TRUE);
 
   label345 = gtk_label_new (_("Statistiques"));
   gtk_widget_show (label345);
-  gtk_fixed_put (GTK_FIXED (fixed38), label345, 336, 40);
+  gtk_fixed_put (GTK_FIXED (fixed38), label345, 416, 24);
   gtk_widget_set_size_request (label345, 144, 24);
 
-  image61 = create_pixmap (statistics, "Statistic_by_Nikita_Kozin.gif");
-  gtk_widget_show (image61);
-  gtk_fixed_put (GTK_FIXED (fixed38), image61, 0, 280);
-  gtk_widget_set_size_request (image61, 800, 424);
+  scrolledwindow5 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow5);
+  gtk_fixed_put (GTK_FIXED (fixed38), scrolledwindow5, 104, 80);
+  gtk_widget_set_size_request (scrolledwindow5, 376, 208);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow5), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+
+  statistics_label_le = gtk_label_new (_("Statistiques Listes Electorales"));
+  gtk_widget_show (statistics_label_le);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow5), statistics_label_le);
+  gtk_widget_set_size_request (statistics_label_le, 440, 152);
+  gtk_label_set_use_markup (GTK_LABEL (statistics_label_le), TRUE);
+  gtk_label_set_justify (GTK_LABEL (statistics_label_le), GTK_JUSTIFY_CENTER);
+  gtk_label_set_line_wrap (GTK_LABEL (statistics_label_le), TRUE);
+
+  scrolledwindow8 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow8);
+  gtk_fixed_put (GTK_FIXED (fixed38), scrolledwindow8, 104, 296);
+  gtk_widget_set_size_request (scrolledwindow8, 376, 208);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow8), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+
+  label378 = gtk_label_new (_("Statistiques Utilisateurs"));
+  gtk_widget_show (label378);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow8), label378);
+  gtk_widget_set_size_request (label378, 440, 152);
+  gtk_label_set_use_markup (GTK_LABEL (label378), TRUE);
+  gtk_label_set_justify (GTK_LABEL (label378), GTK_JUSTIFY_CENTER);
+  gtk_label_set_line_wrap (GTK_LABEL (label378), TRUE);
+
+  label336 = gtk_label_new (_("2022"));
+  gtk_widget_show (label336);
+  gtk_fixed_put (GTK_FIXED (fixed38), label336, 912, 848);
+  gtk_widget_set_size_request (label336, 57, 17);
 
   g_signal_connect ((gpointer) statistics_btn_ret, "clicked",
                     G_CALLBACK (on_statistics_btn_ret_clicked),
@@ -2256,9 +2304,15 @@ create_statistics (void)
   GLADE_HOOKUP_OBJECT (statistics, fixed38, "fixed38");
   GLADE_HOOKUP_OBJECT (statistics, statistics_btn_ret, "statistics_btn_ret");
   GLADE_HOOKUP_OBJECT (statistics, image58, "image58");
-  GLADE_HOOKUP_OBJECT (statistics, label336, "label336");
-  GLADE_HOOKUP_OBJECT (statistics, label345, "label345");
   GLADE_HOOKUP_OBJECT (statistics, image61, "image61");
+  GLADE_HOOKUP_OBJECT (statistics, scrolledwindow7, "scrolledwindow7");
+  GLADE_HOOKUP_OBJECT (statistics, statistics_label_bv, "statistics_label_bv");
+  GLADE_HOOKUP_OBJECT (statistics, label345, "label345");
+  GLADE_HOOKUP_OBJECT (statistics, scrolledwindow5, "scrolledwindow5");
+  GLADE_HOOKUP_OBJECT (statistics, statistics_label_le, "statistics_label_le");
+  GLADE_HOOKUP_OBJECT (statistics, scrolledwindow8, "scrolledwindow8");
+  GLADE_HOOKUP_OBJECT (statistics, label378, "label378");
+  GLADE_HOOKUP_OBJECT (statistics, label336, "label336");
 
   return statistics;
 }

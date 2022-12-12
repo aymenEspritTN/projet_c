@@ -47,6 +47,25 @@ on_btn_statistics_clicked              (GtkButton       *button,
 	GtkWidget *curr = lookup_widget(button, "gestion_entry");
 	gtk_widget_show(next);
 	gtk_widget_hide(curr);
+
+	int i;
+	char* text[500];
+	strcpy(text, "");
+
+	ListeElectorale *ordered;
+	int nbre_le = L_ordre("le.txt", &ordered, "user.txt");
+	for(i=0; i<nbre_le; i++)
+	{
+		char* line[50];
+		sprintf(line, "ListeElectorale %d ===> %d votes\n", ordered[i].id
+							, nbv("user.txt", ordered[i].id));
+		strcat(text, line);
+	}
+
+	//zid statistiques mte3ek hni
+
+	GtkWidget *statistics_label = lookup_widget(next, "statistics_label_le");
+	gtk_label_set_text(GTK_LABEL(statistics_label), text);	
 }
 
 void
@@ -491,6 +510,7 @@ on_buttonElec_clicked                  (GtkButton       *button,
 
 }
 
+
 void voter(GtkWidget* button)
 {
 	GtkWidget* le_vote = lookup_widget(button, "le_vote");
@@ -499,31 +519,42 @@ void voter(GtkWidget* button)
 	char* id_liste = gtk_entry_get_text(le_vote_id_liste);
 	char* id_user = gtk_entry_get_text(le_vote_id_user);
 
-	/*User existing_user = chercher_user("user.txt", id_user);
-	if(existing_user.id == -1)
+	User existing_user = //chercher_user("user.txt", id_user);
+				chercher(atoi(id_user), "user.txt");
+	if(existing_user.cin == -1)
 	{
 		GtkWidget* dialog = gtk_message_dialog_new (le_vote,
 			                  GTK_DIALOG_DESTROY_WITH_PARENT,
 			                  GTK_MESSAGE_ERROR,
 			                  GTK_BUTTONS_CLOSE,
-			                  "Id _Utilisateur_ est invalide ou n'existe pas.");
+			                  "Utilisateur:%s est invalide ou n'existe pas.", id_user);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		return;
 	}
-	User existing_le = chercher_user("le.txt", id_liste);
-	if(existing_le.id == -1)
+	
+	if( strcmp(id_liste, "-1") == 0)
 	{
-		GtkWidget* dialog = gtk_message_dialog_new (le_vote,
-			                  GTK_DIALOG_DESTROY_WITH_PARENT,
-			                  GTK_MESSAGE_ERROR,
-			                  GTK_BUTTONS_CLOSE,
-			                  "Id ListeElectorale est invalide ou n'existe pas.");
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-		return;
+		//Vote blanche
 	}
-	existing_user.vote = atoi(id_liste);*/
+	else
+	{
+		ListeElectorale existing_le = chercher_le("le.txt", atoi(id_liste));
+		if(existing_le.id == -1)
+		{
+			GtkWidget* dialog = gtk_message_dialog_new (le_vote,
+					          GTK_DIALOG_DESTROY_WITH_PARENT,
+					          GTK_MESSAGE_ERROR,
+					          GTK_BUTTONS_CLOSE,
+					          "Id ListeElectorale est invalide ou n'existe pas.");
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+			return;
+		}
+	}
+	existing_user.vote = atoi(id_liste);
+
+	modifier(existing_user, "user.txt");
 	
 	GtkWidget* dialog = gtk_message_dialog_new (le_vote,
 		                  GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -597,6 +628,7 @@ on_auth_btn_login_clicked              (GtkButton       *button,
 	{
 		exists.cin = 99999999;
 		exists.role = admin;
+		//strcpy(exists.role, "admin");
 	}
 
 	if(exists.cin == -1)
@@ -611,7 +643,7 @@ on_auth_btn_login_clicked              (GtkButton       *button,
 	}
 	else
 	{
-		if(exists.role != admin)
+		if( exists.role != admin )
 		{
 			GtkWidget* dialog = gtk_message_dialog_new (auth,
 				                  GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1665,7 +1697,7 @@ on_button_aj_clicked                   (GtkWidget      *objet,
                                         gpointer         user_data)
 {
 GtkWidget *aj1, *aj2, *aj3, *aj4, *aj5, *aj6, *aj7, *aj8, *aj9, *aj10, *aj11, *aj12, *aj13, *aj14, *pInfo;
-ut u;
+User u;
 char ch[100];
 strcpy(ch, "");
 aj1=lookup_widget(objet,"aj1");
@@ -1690,9 +1722,9 @@ strcpy(u.email,gtk_entry_get_text(GTK_ENTRY(aj4)));
 strcpy(u.pw,gtk_entry_get_text(GTK_ENTRY(aj5)));
 u.bv = atoi(gtk_entry_get_text(GTK_ENTRY(aj6)));
 u.sexe=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(aj7))?0:1;
-u.d.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj9));
-u.d.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj10));
-u.d.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj11));
+u.date.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj9));
+u.date.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj10));
+u.date.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj11));
 u.vote=gtk_spin_button_get_value(GTK_SPIN_BUTTON(aj12));
 strcpy(u.role,gtk_entry_get_text(GTK_ENTRY(aj14)));
 
@@ -1786,7 +1818,7 @@ on_button_mod_clicked                  (GtkWidget       *objet,
                                         gpointer         user_data)
 {
 GtkWidget *mod1, *mod2, *mod3, *mod4, *mod5, *mod6, *mod7, *mod8, *mod9, *mod10, *mod11, *mod12, *mod13, *mod14, *pInfo;
-ut u;
+User u;
 mod1=lookup_widget(objet,"mod1");
 mod2=lookup_widget(objet,"mod2");
 mod3=lookup_widget(objet,"mod3");
@@ -1809,9 +1841,9 @@ strcpy(u.email,gtk_entry_get_text(GTK_ENTRY(mod4)));
 strcpy(u.pw,gtk_entry_get_text(GTK_ENTRY(mod5)));
 u.bv = atoi(gtk_entry_get_text(GTK_ENTRY(mod6)));
 u.sexe=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mod7))?0:1;
-u.d.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod9));
-u.d.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod10));
-u.d.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod11));
+u.date.jour=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod9));
+u.date.mois=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod10));
+u.date.an=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod11));
 u.vote=gtk_spin_button_get_value(GTK_SPIN_BUTTON(mod12));
 bool a=gtk_toggle_button_get_active(GTK_CHECK_BUTTON(mod13));
 if(a)
@@ -1868,7 +1900,7 @@ mod12=lookup_widget(objet,"mod12");
 mod13=lookup_widget(objet,"mod13");
 mod14=lookup_widget(objet,"mod14");
 id = atoi(gtk_entry_get_text(GTK_ENTRY(mod1)));
-ut p = chercher(id, "user.txt");
+User p = chercher(id, "user.txt");
 if(p.cin!=-1){
 sprintf(bv,"%d",p.bv);
 sprintf(role,"%s",p.role);
@@ -1880,9 +1912,9 @@ gtk_entry_set_text(GTK_ENTRY(mod6),bv);
 gtk_entry_set_text(GTK_ENTRY(mod14),role);
 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod7),p.sexe==0?TRUE:FALSE);
 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod8),p.sexe==0?FALSE:TRUE);
-gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod9),p.d.jour);
-gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod10),p.d.mois);
-gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod11),p.d.an);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod9),p.date.jour);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod10),p.date.mois);
+gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod11),p.date.an);
 gtk_spin_button_set_value(GTK_SPIN_BUTTON(mod12),p.vote);
 }
 else{
@@ -1906,7 +1938,7 @@ on_treeview_row_activated              (GtkTreeView     *treeview,
 {
 GtkTreeIter iter;
 	guint id;
-	ut u;
+	User u;
 	GtkWidget *pInfo, *objet, *af;
 	GtkTreeModel *model=gtk_tree_view_get_model(treeview);
 	if(gtk_tree_model_get_iter(model,&iter,path)){
